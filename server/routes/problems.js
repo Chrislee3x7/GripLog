@@ -16,10 +16,14 @@ router.get(`/`, async (req, res) => {
 
 router.post(`/`, async (req, res) => {
   const problem = new Problem({
+    user: req.body.user,
     name: req.body.name,
     grade: req.body.grade,
+    color: req.body.color,
+    attemptCount: req.body.attemptCount,
     image: req.body.image,
-    attemptCount: req.body.attemptCount
+    location: req.body.location,
+    completed: req.body.completed
   });
 
   const createdProblem = await problem.save();

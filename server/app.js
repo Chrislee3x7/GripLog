@@ -18,10 +18,12 @@ app.use(morgan('tiny'));
 
 // Routes
 const problemsRoutes = require('./routes/problems');
+const usersRoutes = require('./routes/users');
 
 const api = process.env.API_URL;
 
 app.use(`${api}/problems`, problemsRoutes);
+app.use(`${api}/users`, usersRoutes);
 
 
 // add connection before starting server
