@@ -7,10 +7,16 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 // helps to connect to mongoDB
 const mongoose = require('mongoose');
+// enable cross origin requests
+const cors = require('cors');
 // for access to .env file variables
 // any variables defined in .env are accessible anywhere in the
 // application with the use of "require('dotenv/config')"
 require('dotenv/config');
+
+app.use(cors());
+// allow all http requests to be passed from any other origin
+app.options('*', cors());
 
 // Middleware
 app.use(bodyParser.json());

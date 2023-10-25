@@ -25,7 +25,7 @@ router.post(`/`, async (req, res) => {
     attemptCount: req.body.attemptCount,
     image: req.body.image,
     location: req.body.location,
-    completed: req.body.completed
+    dateCompleted: req.body.dateCompleted
   });
 
   const createdProblem = await problem.save();

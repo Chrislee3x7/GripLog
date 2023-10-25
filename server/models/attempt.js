@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const AttemptSchema = mongoose.Schema({
-  // user_id: {
-  //   type: mongoose.Schema.ObjectId,
-  //   ref: 'User',
-  //   required: true
-  // },
   problem_id: {
     type: mongoose.Schema.ObjectId,
     ref: 'Problem',
@@ -17,7 +12,7 @@ const AttemptSchema = mongoose.Schema({
   },
   date: {
     type: Date,
-    required: true
+    default: Date.now
   },
   is_send: {
     type: Boolean,

@@ -10,11 +10,11 @@ const ProblemSchema = mongoose.Schema({
   },
   name: {
     type: String,
-    required: true
+    default: ''
   },
   grade: {
     type: Number,
-    required: true
+    default: -1 // means no grade
   },
   color: {
     type: Number,
@@ -22,24 +22,25 @@ const ProblemSchema = mongoose.Schema({
   },
   attemptCount: {
       type: Number,
-      required: true
+      default: 0, // Initially 0 and depends on the count of attempts in attempts table
+      min: 0,
+      max: 255
   },
-  image: {
+  images: [{
     type: String,
-    required: false
+  }],
+  dateStarted: {
+    type: Date,
+    default: Date.now
   },
-  // dateStarted: {
-  //   type: Date,
-  //   required: true
-  // },
   location: {
     type: String,
     required: false
   },
-  completed: {
-    type: Boolean,
-    required: true
+  dateCompleted: {
+    type: Date,
+    default: 0
   }
-})
+});
 
 module.exports = mongoose.model('Problem', ProblemSchema);
