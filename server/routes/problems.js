@@ -3,20 +3,22 @@ const express = require('express');
 const router = express.Router();
 
 // Initial route that a Get request will take.
-// Visitinghttp://localhost:3000 will yield "hello API!"
+// Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
 router.get(`/`, async (req, res) => {
   // gets all Problems
-  const problemList = await Problem.find();
+  const query = { user_id: req.body.user_id }
+  const problemList = await Problem.find(query);
   if (!problemList) {
-    res.status(500).json({succes: false});
+    res.status(500).json({success: false});
+  } else {
+    res.send(problemList);
   }
-  res.send(problemList);
 });
 
 router.post(`/`, async (req, res) => {
   const problem = new Problem({
-    user: req.body.user,
+    user_id: req.body.user_id,
     name: req.body.name,
     grade: req.body.grade,
     color: req.body.color,
@@ -28,10 +30,7 @@ router.post(`/`, async (req, res) => {
 
   const createdProblem = await problem.save();
   if (!createdProblem) {
-    res.status(500).json({
-      error: err,
-      success: false
-    });
+    res.status(500).json({success: false});
   } else {
     res.status(201).json(createdProblem);
   }

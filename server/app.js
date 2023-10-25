@@ -19,14 +19,16 @@ app.use(morgan('tiny'));
 // Routes
 const problemsRoutes = require('./routes/problems');
 const usersRoutes = require('./routes/users');
+const attemptsRoutes = require('./routes/attempts');
 
 const api = process.env.API_URL;
 
 app.use(`${api}/problems`, problemsRoutes);
 app.use(`${api}/users`, usersRoutes);
+app.use(`${api}/attempts`, attemptsRoutes);
 
 
-// add connection before starting server
+// connect to database before starting server
 mongoose.connect(process.env.CONNECTION_STRING, {
   // 'griplogdb' lines up with database name on MongoAtlas
   dbName: 'griplogdb'
@@ -36,6 +38,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
   console.log(err);
 });
 
+// starting server
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
 });
