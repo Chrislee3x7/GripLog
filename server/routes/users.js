@@ -3,20 +3,20 @@ const express = require('express');
 const router = express.Router();
 
 // User routes below
-router.get(`/`, async (req, res) => {
+router.get('/', async (req, res) => {
   // TODO: with the right username/email, should return corresponding user
   const query = { username: req.body.username }
   const user = await User.findOne(query);
   if (!user) {
     // user does not exist
-    res.status(500).json({success: false});
+    res.status(500).json({success: false, message: 'User not found!'});
   } else {
     res.send(user);
   }
 });
 
 // Create new user
-router.post(`/`, async (req, res) => {
+router.post('/', async (req, res) => {
   // add a new user
   const user = new User({
     username: req.body.username,
@@ -30,9 +30,17 @@ router.post(`/`, async (req, res) => {
   // valid name, etc
   const createdUser = await user.save();
   if (!createdUser) {
-    res.status(500).json({success: false});
+    res.status(400).json('User could not be created!');
+  }
+  res.status(201).json(createdUser);
+});
+
+router.delete('/:id', async (req,res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) {
+    res.status(404).json({success: false, message: 'User not be found!'}); 
   } else {
-    res.status(201).json(createdUser);
+    res.status(200).json({success: true, message: 'User was successfully deleted.'})
   }
 });
 

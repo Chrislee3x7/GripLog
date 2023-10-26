@@ -17,7 +17,7 @@ const ProblemSchema = mongoose.Schema({
     default: -1 // means no grade
   },
   color: {
-    type: Number,
+    type: String,
     required: true
   },
   attemptCount: {
