@@ -6,10 +6,6 @@ const AttemptSchema = mongoose.Schema({
     ref: 'Problem',
     required: true
   },
-  attemptNumber: {
-    type: Number,
-    required: true
-  },
   date: {
     type: Date,
     default: Date.now

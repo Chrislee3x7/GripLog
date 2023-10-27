@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     // user does not exist
     res.status(500).json({success: false, message: 'User not found!'});
   } else {
-    res.send(user);
+    res.status(200).send(user);
   }
 });
 
@@ -35,7 +35,12 @@ router.post('/', async (req, res) => {
   res.status(201).json(createdUser);
 });
 
+// delete User
 router.delete('/:id', async (req,res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(400).send('User ID is invalid!');
+  }
+  
   const user = await User.findByIdAndDelete(req.params.id);
   if (!user) {
     res.status(404).json({success: false, message: 'User not be found!'}); 
