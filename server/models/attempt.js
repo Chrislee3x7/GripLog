@@ -16,4 +16,12 @@ const AttemptSchema = mongoose.Schema({
   },
 });
 
+AttemptSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+AttemptSchema.set('toJSON', {
+  virtuals: true,
+});
+
 module.exports = mongoose.model('Attempt', AttemptSchema);

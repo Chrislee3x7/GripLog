@@ -9,6 +9,9 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 // enable cross origin requests
 const cors = require('cors');
+// Helps us check that the token that the user provides is valid
+const authJwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error_handler')
 // for access to .env file variables
 // any variables defined in .env are accessible anywhere in the
 // application with the use of "require('dotenv/config')"
@@ -21,6 +24,8 @@ app.options('*', cors());
 // Middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
+app.use(authJwt); // authenticate token
+app.use(errorHandler);
 
 // Routes
 const problemsRoutes = require('./routes/problems');

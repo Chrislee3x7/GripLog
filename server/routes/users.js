@@ -1,19 +1,30 @@
 const User = require('../models/user');
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const router = express.Router();
+require('dotenv/config');
 
 // User routes below
+// Get all Users
 router.get('/', async (req, res) => {
-  // TODO: with the right username/email, should return corresponding user
-  const query = { username: req.body.username }
-  const user = await User.findOne(query);
-  if (!user) {
-    // user does not exist
-    res.status(500).json({success: false, message: 'User not found!'});
-  } else {
-    res.status(200).send(user);
+  const userList = await User.find().select('-passwordHash');
+  if (!userList) {
+    // return no users found
+    return res.status(500).json({success: false});
   }
+  res.send(userList);
 });
+
+// Get user by Id
+router.get('/:id', async (req, res) => {
+  const user = await User.findById(req.params.id).select('-passwordHash');
+  if (!user) {
+    //user does not exist
+    return res.status(500).json({message: 'User with the given ID was not found!'});
+  }
+  res.status(200).send(user);
+})
 
 // Create new user
 router.post('/', async (req, res) => {
@@ -22,7 +33,7 @@ router.post('/', async (req, res) => {
     username: req.body.username,
     name: req.body.name,
     email: req.body.email,
-    passwordHash: req.body.passwordHash
+    passwordHash: bcrypt.hashSync(req.body.password, 10)
   });
   
   // TODO: field checking
@@ -47,6 +58,57 @@ router.delete('/:id', async (req,res) => {
   } else {
     res.status(200).json({success: true, message: 'User was successfully deleted.'})
   }
+});
+
+// User login route
+router.post('/login', async (req, res) => {
+  // find user by email
+  const user = await User.findOne({email: req.body.email});
+  const secret = process.env.SECRET;
+  if (!user) {
+    return res.status(400).send('User was not found!');
+  }
+  // now we know user exists
+  // check unhashed password with user entered password
+  if (!bcrypt.compareSync(req.body.password, user.passwordHash)) {
+    return res.status(400).send('Password is wrong!');
+  }
+  // if the password is correct, provide the user with a jwt
+  // that lasts 1 day (can be changed later)
+  const token = jwt.sign(
+    {
+      userId: user.id
+    },
+    secret,
+    //{expriesIn: '1d'} // expires in 1 day
+  )
+  res.status(200).send({user: user.email, token: token});
+});
+
+// User register route
+router.post('/register', async (req, res) => {
+  // Try to find user with email, if exists, then cannot create with this email
+  // usernames can have duplicates, emails must be unique
+  const user = await User.findOne({email: req.body.email}); 
+  const secret = process.env.SECRET;
+  if (user) {
+    return res.status(400).send('A user with this email already exists!');
+  }
+  let newUser = new User({
+    username: req.body.username,
+    name: req.body.name,
+    email: req.body.email,
+    passwordHash: bcrypt.hashSync(req.body.password, 10)
+  });
+
+  // TODO: field checking
+  // make sure email is unique
+  // valid name, etc
+  newUser = await newUser.save();
+  if (!newUser) {
+    return res.status(400).json('User could not be created!');
+  }
+  res.status(201).json(newUser);
 });
 
 module.exports = router;

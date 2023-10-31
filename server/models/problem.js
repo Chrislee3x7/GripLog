@@ -43,4 +43,12 @@ const ProblemSchema = mongoose.Schema({
   }
 });
 
+ProblemSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+ProblemSchema.set('toJSON', {
+  virtuals: true,
+});
+
 module.exports = mongoose.model('Problem', ProblemSchema);
