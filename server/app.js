@@ -26,6 +26,7 @@ app.use(bodyParser.json());
 app.use(morgan('tiny'));
 app.use(authJwt); // authenticate token
 app.use(errorHandler);
+app.use('/public/uploads', express.static(__dirname + '/public/uploads')); // Static path so that anyone can access
 
 // Routes
 const problemsRoutes = require('./routes/problems');

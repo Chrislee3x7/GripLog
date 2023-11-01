@@ -12,6 +12,7 @@ const authJwt = jwt({
 }).unless({ // List of api paths that anyone can access "unless it is this api path"
   path: [
     {url: `${api}/problems`, methods: ['GET', 'OPTIONS']}, // Allows non logged in users to see all problems, but not post
+    {url: /\/public\/uploads(.*)/ , methods: ['GET', 'OPTIONS']},
     `${api}/users/login`,
     `${api}/users/register`
   ]

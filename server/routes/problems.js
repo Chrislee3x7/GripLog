@@ -74,7 +74,7 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
   let imagePaths = [];
   if (files) {
     files.map(file => {
-      const basePath = `${req.protocol}://${req.get('host')}/public/uploads`;
+      const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
       imagePaths.push(`${basePath}${file.filename}`);
     })
   }
@@ -146,7 +146,7 @@ router.put(
     let imagePaths = [];
     if (files) {
       files.map(file => {
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads`;
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
         imagePaths.push(`${basePath}${file.filename}`);
       })
     }
