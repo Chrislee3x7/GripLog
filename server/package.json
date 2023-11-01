@@ -1,5 +1,5 @@
 {
-  "name": "griplog",
+  "name": "griplog-server",
   "version": "1.0.0",
   "description": "backend of griplog app",
   "main": "app.js",
