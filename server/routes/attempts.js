@@ -43,6 +43,7 @@ router.post('/', async (req, res) => {
   const attempt = new Attempt({
     problem_id: req.body.problem_id,
     date: req.body.date,
+    notes: req.body.notes,
     is_send: req.body.is_send
   });
 
@@ -74,6 +75,7 @@ router.put('/:id', async (req, res) => {
     req.params.id,
     {
       date: req.body.date,
+      notes: req.body.notes,
       is_send: req.body.is_send
     },
     { new: true } // means that we want the new updated data to be returned

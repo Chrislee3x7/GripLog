@@ -80,9 +80,9 @@ router.post('/login', async (req, res) => {
       userId: user.id
     },
     secret,
-    //{expriesIn: '1d'} // expires in 1 day
+    {expiresIn: '1d'} // expires in 1 day
   )
-  res.status(200).send({user: user.email, token: token});
+  res.status(200).send({id: user.id, user: user.email, token: token});
 });
 
 // User register route

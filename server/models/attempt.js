@@ -10,6 +10,10 @@ const AttemptSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  notes:{
+    type: String,
+    default: ''
+  },
   is_send: {
     type: Boolean,
     required: true
