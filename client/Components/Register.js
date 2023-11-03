@@ -1,89 +1,125 @@
 import React from 'react';
 import { View } from 'react-native';
 import { API_URL } from '@env';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { HelperText, Text, TextInput, Button, IconButton } from 'react-native-paper';
 import axios from 'axios';
 
-const onRegisterPress = (name, email, username, password) => {
-  console.log(`${API_URL}/users/register`);
-  axios.post(`${API_URL}/users/register`,
-    {
-      name: name,
-      email: email,
-      username: username,
-      password: password
-    }
-	)
-  .then((res) => {
-    console.log("yayyyy");
-    console.log(res.data);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
-  // if (res.status == 200) {
-  //   console.log(res);
-  // } else {
-  //   console.log(res.headers);
-  // }
-}
 
 const Register = () => {
-
+  
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  // Error messages
+  const [nameError, setNameError] = React.useState('');
+  const [emailError, setEmailError] = React.useState('');
+  const [usernameError, setUsernameError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
+  
+  const onCancelPress = () => {
+    console.log("TODO: cancel pressed.");
+  }
 
+  const onRegisterPress = () => {
+    // TODO input checking
+    let isValid = true;
+    if (!name) {
+      isValid = false; 
+      setNameError("Uh-oh! All Grippers must have a name!");
+    } else {
+      setNameError('');
+    }
+    if (!email) {
+      isValid = false;
+      setEmailError("Uh-oh! All Grippers must have an email!");
+    } else {
+      setEmailError('');
+    }
+    if (!username) {
+      isValid = false;
+      setUsernameError("Uh-oh! All Grippers must have a username!");
+    } else {
+      setUsernameError('');
+    }
+    if (!password) {
+      isValid = false; 
+      setPasswordError("Uh-oh! All Grippers must have a password!");
+    } else {
+      setPasswordError('');
+    }
+  
+  
+  
+    if (!isValid) return; // do not make request, simply return
+  
+    console.log(`${API_URL}/users/register`);
+    axios.post(`${API_URL}/users/register`,
+      {
+        name: name,
+        email: email,
+        username: username,
+        password: password
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
   return (
     <View>
-      <Text variant="headlineLarge">Register</Text>
-      <View className="my-2 ml-4 mr-4">
-        <Text variant="titleSmall">Name</Text>
+      <Text className="mt-6 mb-4" variant="headlineLarge">Register</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Name'
           value={name}
+          error={nameError}
           onChangeText={name => setName(name)}
         />
+        {nameError ? <HelperText type="error" visible={true}>{nameError}</HelperText> : null}
       </View>
-      <View className="my-2 ml-4 mr-4">
-        <Text variant="titleSmall">Email</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Email'
           value={email}
+          error={emailError}
           onChangeText={email => setEmail(email)}
         />
+        {emailError ? <HelperText type="error" visible={true}>{emailError}</HelperText> : null}
       </View>
-      <View className="my-2 ml-4 mr-4">
-        <Text variant="titleSmall">Username</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Username'
           value={username}
+          error={usernameError}
           onChangeText={username => setUsername(username)}
         />
+        {usernameError ? <HelperText type="error" visible={true}>{usernameError}</HelperText> : null}
       </View>
-      <View className="my-2 ml-4 mr-4">
-        <Text variant="titleSmall">Password</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Password'
           value={password}
+          error={passwordError}
+          secureTextEntry={true}
           onChangeText={password => setPassword(password)}
         />
+        {passwordError ? <HelperText type="error" visible={true}>{passwordError}</HelperText> : null}
       </View>
-      <View className="my-2 flex flex-nowrap">
-          <Button className="" mode='contained-tonal'>Cancel</Button>
-          <Button className="" mode='contained-tonal' 
-            onPress={() => onRegisterPress(name, email, username, password)}>Register</Button>
+      <View className="my-4 flex-row">
+        <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
+          onPress={() => onCancelPress()}>Cancel</Button>
+        <Button className="shrink mx-2 w-1/2" mode='contained' 
+          onPress={() => onRegisterPress()}>Register</Button>
       </View>
     </View>
   )
