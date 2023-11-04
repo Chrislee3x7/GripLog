@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
 import { API_URL } from '@env';
+import { View } from 'react-native';
 import { HelperText, Text, TextInput, Button, IconButton } from 'react-native-paper';
 import axios from 'axios';
 
@@ -49,12 +49,17 @@ const Register = () => {
     } else {
       setPasswordError('');
     }
-  
-    // test ssh
+    if (!confirmPassword) {
+      isValid = false; 
+      setPasswordError("Uh-oh! All Grippers must have a password!");
+    } else if (password != confirmPassword) {
+      setPasswordError("Uh-oh! Passwords must match!");
+    } else {
+      setPasswordError('');
+    }
   
     if (!isValid) return; // do not make request, simply return
   
-    console.log(`${API_URL}/users/register`);
     axios.post(`${API_URL}/users/register`,
       {
         name: name,
@@ -114,6 +119,17 @@ const Register = () => {
           onChangeText={password => setPassword(password)}
         />
         {passwordError ? <HelperText type="error" visible={true}>{passwordError}</HelperText> : null}
+      </View>
+      <View className="mb-4 ml-4 mr-4">
+        <TextInput
+          mode={'outlined'}
+          label='Confirm Password'
+          value={confirmPassword}
+          error={confirmPasswordError}
+          secureTextEntry={true}
+          onChangeText={confirmPassword => setConfirmPassword(confirmPassword)}
+        />
+        {confirmPasswordError ? <HelperText type="error" visible={true}>{confirmPasswordError}</HelperText> : null}
       </View>
       <View className="my-4 flex-row">
         <Button className="shrink mx-2 w-1/2" mode='contained-tonal'

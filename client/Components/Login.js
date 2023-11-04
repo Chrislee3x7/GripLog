@@ -1,39 +1,85 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { API_URL } from '@env';
+import { View } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
+import axios from 'axios';
+
 
 const Login = () => {
 
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  
+  const [emailError, setEmailError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
 
+  const onCancelPress = () => {
+    console.log("TODO: cancel pressed.");
+  }
+
+  const onRegisterPress = () => {
+    // TODO input checking
+    let isValid = true;
+    if (!email) {
+      isValid = false;
+      setEmailError("Please input a valid email!");
+    } else {
+      setEmailError('');
+    }
+    if (!password) {
+      isValid = false; 
+      setPasswordError("Please input a password!");
+    } else {
+      setPasswordError('');
+    }
+  
+    if (!isValid) return; // do not make request, simply return
+  
+    axios.post(`${API_URL}/users/login`,
+      {
+        email: email,
+        password: password
+      }
+    )
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
   return (
-    <View className="m-4">
-      <Text variant="headlineLarge">Login</Text>
-      <View className="mb-4">
-        <Text variant="titleSmall">Email</Text>
+    <View className="">
+      <Text className="mt-6 mb-4" variant="headlineLarge">Login</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Email'
           value={email}
+          error={emailError}
           onChangeText={email => setEmail(email)}
         />
+        {emailError ? <HelperText type="error" visible={true}>{emailError}</HelperText> : null}
       </View>
-      <View className="mb-4">
-        <Text variant="titleSmall">Password</Text>
+      <View className="mb-4 ml-4 mr-4">
         <TextInput
-          className=""
           mode={'outlined'}
           label='Password'
           value={password}
+          error={passwordError}
+          secureTextEntry={true}
           onChangeText={password => setPassword(password)}
         />
+        {passwordError ? <HelperText type="error" visible={true}>{passwordError}</HelperText> : null}
       </View>
-      <View className="flex flex-nowrap">
-          <Button className="flex-shrink" mode='contained-tonal'>Cancel</Button>
-          <Button className="" mode='contained-tonal'>Sign Innnnnn</Button>
+  
+      <View className="my-4 flex-row">
+        <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
+          onPress={() => onCancelPress()}>Cancel</Button>
+        <Button className="shrink mx-2 w-1/2" mode='contained' 
+          onPress={() => onRegisterPress()}>Register</Button>
       </View>
     </View>
   )

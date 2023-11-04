@@ -12,7 +12,8 @@ const GripLog = () => {
 
   return (
     <View className="mt-12 ml-8 mr-8">
-      <Register></Register>
+      {/* <Register></Register> */}
+      <Login></Login>
     </View>
   )
 }
