@@ -2,11 +2,11 @@ import React from 'react';
 import { API_URL } from '@env';
 import { View } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
+import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 
 
-const Login = () => {
-
+const LoginScreen = ({ navigation }) => {
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -18,7 +18,7 @@ const Login = () => {
     console.log("TODO: cancel pressed.");
   }
 
-  const onRegisterPress = () => {
+  const onLoginPress = async () => {
     // TODO input checking
     let isValid = true;
     if (!email) {
@@ -36,22 +36,39 @@ const Login = () => {
   
     if (!isValid) return; // do not make request, simply return
   
-    axios.post(`${API_URL}/users/login`,
+    try {
+      console.log("trying post login");
+      const res = await axios.post(`${API_URL}/users/login`,
       {
         email: email,
         password: password
-      }
-    )
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch((err) => {
+      });
+      console.log(res.data.token);
+      await SecureStore.setItemAsync('jwt', res.data.token);
+      const token = await SecureStore.getItemAsync('jwt');
+      console.log(token);
+    } catch (err) {
       console.log(err);
-    });
+      return;
+    }
+    
+    // axios.post(`${API_URL}/users/login`,
+    //   {
+    //     email: email,
+    //     password: password
+    //   }
+    // )
+    // .then(async (res) => {
+    //   console.log(res.data.token);
+    //   // await SecureStore.setItemAsync('jwt', res.body.token);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
   }
 
   return (
-    <View className="">
+    <View className="mt-12 ml-8 mr-8">
       <Text className="mt-6 mb-4" variant="headlineLarge">Login</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
@@ -76,34 +93,15 @@ const Login = () => {
       </View>
   
       <View className="my-4 flex-row">
-        <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
-          onPress={() => onCancelPress()}>Cancel</Button>
-        <Button className="shrink mx-2 w-1/2" mode='contained' 
-          onPress={() => onRegisterPress()}>Register</Button>
+        {/* <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
+          onPress={() => onCancelPress()}>Cancel</Button> */}
+        <Button className="mx-2 grow" mode='contained' 
+          onPress={() => onLoginPress()}>Login</Button>
       </View>
+      <Button className="mx-4 self-end" mode='text'
+        onPress={() => navigation.navigate('Register')}>I'm new here!</Button>
     </View>
   )
 }
 
-
-
-// const styles = StyleSheet.create({
-//   align_title: {
-//     alignSelf: 'center'
-//   },
-//   align_left: {
-//     alignSelf: 'flex-start'
-//   },
-//   font: {
-//     fontSize: 20,
-//     fontWeight: 'bold'
-//   },
-//   border: {
-//     borderWidth: 1,
-//     borderStyle: 'solid',
-//     borderRadius: '10'
-//   }
-// })
-
-
-export default Login;
+export default LoginScreen;

@@ -6,17 +6,19 @@ import axios from 'axios';
 
 
 
-const Register = () => {
+const RegisterScreen = ({ navigation }) => {
   
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
   // Error messages
   const [nameError, setNameError] = React.useState('');
   const [emailError, setEmailError] = React.useState('');
   const [usernameError, setUsernameError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
   
   const onCancelPress = () => {
     console.log("TODO: cancel pressed.");
@@ -77,7 +79,7 @@ const Register = () => {
   }
 
   return (
-    <View>
+    <View className="mt-12 ml-8 mr-8">
       <Text className="mt-6 mb-4" variant="headlineLarge">Register</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
@@ -132,13 +134,15 @@ const Register = () => {
         {confirmPasswordError ? <HelperText type="error" visible={true}>{confirmPasswordError}</HelperText> : null}
       </View>
       <View className="my-4 flex-row">
-        <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
-          onPress={() => onCancelPress()}>Cancel</Button>
-        <Button className="shrink mx-2 w-1/2" mode='contained' 
+        {/* <Button className="shrink mx-2 w-1/2" mode='contained-tonal'
+          onPress={() => onCancelPress()}>Cancel</Button> */}
+        <Button className="mx-2 grow" mode='contained' 
           onPress={() => onRegisterPress()}>Register</Button>
       </View>
+      <Button className="self-end" mode='text'
+        onPress={() => navigation.navigate('Login')}>I'm already a Gripper!</Button>
     </View>
   )
 }
 
-export default Register;
+export default RegisterScreen;

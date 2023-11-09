@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme, Text, Button } from 'react-native-paper';
-import Login from './Login';
-import Register from './Register';
+import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
 
 
 const GripLog = () => {
-  const theme = useTheme();
+  
+  const Stack = createNativeStackNavigator();
   
   const [title, setTitle] = useState('GripLog');
 
   return (
-    <View className="mt-12 ml-8 mr-8">
-      {/* <Register></Register> */}
-      <Login></Login>
-    </View>
+    <Stack.Navigator className="mt-12 ml-8 mr-8" initialRouteName="Register" 
+      screenOptions={{
+        headerShown: false
+      }}>
+      <Stack.Screen name="Register" component={RegisterScreen}/> 
+      <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
   )
 }
 
