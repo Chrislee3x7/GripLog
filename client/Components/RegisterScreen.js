@@ -51,13 +51,12 @@ const RegisterScreen = ({ navigation }) => {
     } else {
       setPasswordError('');
     }
-    if (!confirmPassword) {
-      isValid = false; 
-      setPasswordError("Uh-oh! All Grippers must have a password!");
-    } else if (password != confirmPassword) {
-      setPasswordError("Uh-oh! Passwords must match!");
+    
+    if (password != confirmPassword) {
+      isValid = false;
+      setConfirmPasswordError("Uh-oh! Passwords must match!");
     } else {
-      setPasswordError('');
+      setConfirmPasswordError('');
     }
   
     if (!isValid) return; // do not make request, simply return
@@ -80,7 +79,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View className="mt-12 ml-8 mr-8">
-      <Text className="mt-6 mb-4" variant="headlineLarge">Register</Text>
+      <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Register</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
           mode={'outlined'}

@@ -19,6 +19,8 @@ const LoginScreen = ({ navigation }) => {
   }
 
   const onLoginPress = async () => {
+    navigation.navigate("Home");
+    return;
     // TODO input checking
     let isValid = true;
     if (!email) {
@@ -69,7 +71,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View className="mt-12 ml-8 mr-8">
-      <Text className="mt-6 mb-4" variant="headlineLarge">Login</Text>
+      <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Login</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
           mode={'outlined'}
