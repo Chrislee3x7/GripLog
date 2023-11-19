@@ -65,7 +65,6 @@ router.delete('/:id', async (req,res) => {
 router.post('/login', async (req, res) => {
   // find user by email
   const user = await User.findOne({email: req.body.email});
-  const secret = process.env.SECRET;
   if (!user) {
     return res.status(400).send('User was not found!');
   }
@@ -80,11 +79,19 @@ router.post('/login', async (req, res) => {
     {
       userId: user.id
     },
-    secret,
-    {expiresIn: '1d'} // expires in 1 day
-  )
-  res.status(200).send({id: user.id, user: user.email, token: token});
+    process.env.ACCESS_TOKEN_SECRET,
+    {expiresIn: '1d'} // expires in 10s
+  );
+
+  res.status(200).send({id: user.id, email: user.email, token: token});
 });
+
+// router.post('/logout', async (req, res) => {
+//   const cookies = req.cookies;
+//   if (!cookies?.jwt) return res.status(204);
+
+//   //res.json({ message: "Cookie cleared" });
+// })
 
 // User register route
 router.post('/register', async (req, res) => {

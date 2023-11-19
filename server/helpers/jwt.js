@@ -4,7 +4,7 @@ require('dotenv/config');
 // This helps us check if the user provided token is valid based
 // on the secret
 
-const secret = process.env.SECRET;
+const secret = process.env.ACCESS_TOKEN_SECRET;
 const api = process.env.API_URL;
 const authJwt = jwt({
   secret,

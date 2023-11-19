@@ -1,9 +1,7 @@
 import React from 'react';
-import { API_URL } from '@env';
 import { View } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
-import * as SecureStore from 'expo-secure-store';
-import axios from 'axios';
+import { Text, TextInput, Button, HelperText } from 'react-native-paper';
+import AuthService from '../services/auth.service'
 
 
 const LoginScreen = ({ navigation }) => {
@@ -19,54 +17,29 @@ const LoginScreen = ({ navigation }) => {
   }
 
   const onLoginPress = async () => {
-    navigation.navigate("Home");
-    return;
-    // TODO input checking
+    // input checking
     let isValid = true;
     if (!email) {
       isValid = false;
-      setEmailError("Please input a valid email!");
+      setEmailError("Please enter a valid email!");
     } else {
       setEmailError('');
     }
     if (!password) {
       isValid = false; 
-      setPasswordError("Please input a password!");
+      setPasswordError("Please enter a password!");
     } else {
       setPasswordError('');
     }
   
-    if (!isValid) return; // do not make request, simply return
+    // if anything is invalid, do not make request, simply return
+    if (!isValid) return; 
   
-    try {
-      console.log("trying post login");
-      const res = await axios.post(`${API_URL}/users/login`,
-      {
-        email: email,
-        password: password
-      });
-      console.log(res.data.token);
-      await SecureStore.setItemAsync('jwt', res.data.token);
-      const token = await SecureStore.getItemAsync('jwt');
-      console.log(token);
-    } catch (err) {
-      console.log(err);
-      return;
-    }
-    
-    // axios.post(`${API_URL}/users/login`,
-    //   {
-    //     email: email,
-    //     password: password
-    //   }
-    // )
-    // .then(async (res) => {
-    //   console.log(res.data.token);
-    //   // await SecureStore.setItemAsync('jwt', res.body.token);
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // });
+    const loginRes = await AuthService.login(email, password);
+    // console.log(loginRes);
+    navigation.navigate("Home")
+
+    return;
   }
 
   return (
@@ -78,7 +51,7 @@ const LoginScreen = ({ navigation }) => {
           label='Email'
           value={email}
           error={emailError}
-          onChangeText={email => setEmail(email)}
+          onChangeText={email => {setEmail(email); setEmailError('');}}
         />
         {emailError ? <HelperText type="error" visible={true}>{emailError}</HelperText> : null}
       </View>
@@ -89,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           error={passwordError}
           secureTextEntry={true}
-          onChangeText={password => setPassword(password)}
+          onChangeText={password => {setPassword(password); setPasswordError('');}}
         />
         {passwordError ? <HelperText type="error" visible={true}>{passwordError}</HelperText> : null}
       </View>

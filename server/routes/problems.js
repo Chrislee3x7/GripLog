@@ -40,6 +40,7 @@ router.get('/', async (req, res) => {
   // gets all Problems of this user (only color grade and name)
   // check user_Id first
   const user = await User.findById(req.body.user_id);
+  console.log(req.body);
   if (!user) return res.status(400).send('User is invalid!');
 
   const query = { user_id: req.body.user_id }

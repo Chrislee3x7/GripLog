@@ -13,7 +13,8 @@ const Home = () => {
   const Tab = createMaterialBottomTabNavigator();
 
   return (
-    <Tab.Navigator initialRouteName="Problems" shifting="true">
+    <Tab.Navigator initialRouteName="Problems" shifting="true"
+      backBehavior="initialRoute">
       <Tab.Screen name="Problems" component={ProblemScreen} 
         options={{
           tabBarLabel: 'Problems',
@@ -22,13 +23,13 @@ const Home = () => {
           ),
         }}/>
       <Tab.Screen name="Social" component={SocialScreen} options={{
-          tabBarLabel: 'Problems',
+          tabBarLabel: 'Social',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account-group" color={color} size={26} />
           ),
         }}/>
       <Tab.Screen name="Profile" component={ProfileScreen} options={{
-          tabBarLabel: 'Problems',
+          tabBarLabel: 'Profile',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
           ),
