@@ -3,6 +3,7 @@ import { API_URL } from '@env';
 import { View } from 'react-native';
 import { HelperText, Text, TextInput, Button, IconButton } from 'react-native-paper';
 import axios from 'axios';
+import AuthService from '../services/auth.service';
 
 
 
@@ -24,7 +25,20 @@ const RegisterScreen = ({ navigation }) => {
     console.log("TODO: cancel pressed.");
   }
 
-  const onRegisterPress = () => {
+  const clearFields = () => {
+    setName('');
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setConfirmPassword('');
+    setNameError('');
+    setEmailError('');
+    setUsernameError('')
+    setPasswordError('');
+    setConfirmPasswordError('');
+  }
+
+  const onRegisterPress = async () => {
     // TODO input checking
     let isValid = true;
     if (!name) {
@@ -60,21 +74,23 @@ const RegisterScreen = ({ navigation }) => {
     }
   
     if (!isValid) return; // do not make request, simply return
-  
-    axios.post(`${API_URL}/users/register`,
-      {
-        name: name,
-        email: email,
-        username: username,
-        password: password
+
+    let err = null;
+
+    const registerRes = await AuthService.register(username, name, email, password);
+    if (Math.floor(registerRes.status / 100) != 2) {
+      setEmailError("Email already in use!");
+      return;
+    } else {
+      console.log(registerRes.status);
+      const loginRes = await AuthService.login(email, password);
+      if (Math.floor(loginRes.status / 100) != 2) {
+        console.log(loginRes.data);
+        return;
       }
-    )
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      navigation.navigate("Home");
+      clearFields();
+    }
   }
 
   return (

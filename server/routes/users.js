@@ -95,12 +95,13 @@ router.post('/login', async (req, res) => {
 
 // User register route
 router.post('/register', async (req, res) => {
+  console.log("in reg")
   // Try to find user with email, if exists, then cannot create with this email
   // usernames can have duplicates, emails must be unique
   const user = await User.findOne({email: req.body.email}); 
   const secret = process.env.SECRET;
   if (user) {
-    return res.status(400).send('A user with this email already exists!');
+    return res.status(409).send('A user with this email already exists!');
   }
   let newUser = new User({
     username: req.body.username,
@@ -114,7 +115,7 @@ router.post('/register', async (req, res) => {
   // valid name, etc
   newUser = await newUser.save();
   if (!newUser) {
-    return res.status(400).json('User could not be created!');
+    return res.status(401).json('User could not be created!');
   }
   res.status(201).json(newUser);
 });

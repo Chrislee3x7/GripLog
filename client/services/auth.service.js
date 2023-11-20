@@ -4,8 +4,8 @@ import { API_URL } from '@env';
 
 
 class AuthService {
-  login(email, password) {
-    return axios.post(`${API_URL}users/login`,
+  async login(email, password) {
+    return axios.post(`${API_URL}/users/login`,
     {
       email: email,
       password: password
@@ -15,16 +15,16 @@ class AuthService {
       await SecureStore.setItemAsync('accessToken', res.data.token);
       // const token = await SecureStore.getItemAsync('accessToken');
       // console.log(token);
-      return res.data;
+      return res;
     })
     .catch((err) => {
-      console.error(err);
-      return err;
+      // console.error(err);
+      return err.response;;
     });
   }
 
   async logout() {
-    await SecureStore.deleteItemAsync("accessToken"); //Without token, user cannot access anything
+    await SecureStore.deleteItemAsync('accessToken'); //Without token, user cannot access anything
     const tok = await SecureStore.getItemAsync('accessToken');
     if (tok) {
       return {succes: "false"};
@@ -32,8 +32,8 @@ class AuthService {
     return {success: "true"};
   }
 
-  register(username, name, email, password) {
-    return axios.post(`${API_URL}users/login`, {
+  async register(username, name, email, password) {
+    return axios.post(`${API_URL}/users/register`, {
       username,
       name,
       email,
@@ -44,8 +44,10 @@ class AuthService {
       return res;
     })
     .catch((err) => {
-      console.error(err);
-      return err;
+      // console.warn("about to return err STATUS!!");
+      // console.log(err.response);
+      // throw err;
+      return err.response;
     });
   }
 

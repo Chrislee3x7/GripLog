@@ -16,6 +16,13 @@ const LoginScreen = ({ navigation }) => {
     console.log("TODO: cancel pressed.");
   }
 
+  const clearFields = () => {
+    setEmail('');
+    setPassword('');
+    setEmailError('');
+    setPasswordError('');
+  }
+
   const onLoginPress = async () => {
     // input checking
     let isValid = true;
@@ -36,10 +43,12 @@ const LoginScreen = ({ navigation }) => {
     if (!isValid) return; 
   
     const loginRes = await AuthService.login(email, password);
-    // console.log(loginRes);
-    navigation.navigate("Home")
-
-    return;
+    if (Math.floor(loginRes.status / 100) != 2) {
+      setPasswordError("Incorrect password or invalid user!")
+      return;
+    }
+    navigation.navigate("Home");
+    clearFields();
   }
 
   return (
