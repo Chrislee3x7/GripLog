@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProblemListView from './ProblemListView';
-import LoginScreen from './LoginScreen';
+import { View } from 'react-native';
+import { FAB } from 'react-native-paper';
+import NewProblemModal from './NewProblemModal';
 
 
-const ProblemScreen = () => {
+const ProblemScreen = ({ navigation }) => {
+
+  const [newProblemModalIsVisible, setNewProblemModalIsVisible] = React.useState(false);
+
   
-  const Stack = createNativeStackNavigator();
 
   return (
-    <Stack.Navigator className="mt-12 ml-8 mr-8" initialRouteName="ProblemList" 
-      screenOptions={{
-      headerShown: false}}>
-        {/* <Stack.Screen name="ProblemList" component={ProblemListView} /> */}
-        <Stack.Screen name="Login" component={ProblemListView} />
-      {/* Put Problem list here and FAB for problem creation */}
-    </Stack.Navigator>
+    <View className="relative h-full">
+      <ProblemListView navigation={navigation}/>
+      <FAB className="absolute bottom-4 right-4" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
+      <NewProblemModal visible={newProblemModalIsVisible} setVisible={setNewProblemModalIsVisible}/>
+    </View>
   )
 }
 

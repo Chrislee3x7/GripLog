@@ -21,6 +21,17 @@ const RegisterScreen = ({ navigation }) => {
   const [passwordError, setPasswordError] = React.useState('');
   const [confirmPasswordError, setConfirmPasswordError] = React.useState('');
   
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      // Do something
+      if (e.data.closing) {
+        clearFields();
+      }
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
+
   const onCancelPress = () => {
     console.log("TODO: cancel pressed.");
   }

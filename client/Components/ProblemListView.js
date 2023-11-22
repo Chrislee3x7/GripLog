@@ -1,12 +1,24 @@
-// import React, { useState } from 'react';
-import { Card, Text, Button } from 'react-native-paper';
+import React, { useState } from 'react';
+import { Card, Text, Button, FAB } from 'react-native-paper';
 import { ScrollView, View, Image } from 'react-native'
+import NewProblemModal from './NewProblemModal';
 
 
-const ProblemListView = () => {
+const ProblemListView = ({ navigation }) => {
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', (e) => {
+      // Do something
+      console.log("in listener");
+      
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
 
   return (
-    <View className="mt-12 ml-4 mr-4 ">
+    <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4 ">
+      {/* <NewProblemModal/> */}
       <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Problems</Text>
       <ScrollView showsVerticalScrollIndicator="false">
         <View className="grid gap-3 grid-cols-1 overflow-auto">

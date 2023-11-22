@@ -5,11 +5,8 @@ import SocialScreen from './SocialScreen';
 import ProfileScreen from './ProfileScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const Home = ({ navigation }) => {
 
-
-
-const Home = () => {
-  
   const Tab = createMaterialBottomTabNavigator();
 
   return (

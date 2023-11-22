@@ -12,6 +12,17 @@ const LoginScreen = ({ navigation }) => {
   const [emailError, setEmailError] = React.useState('');
   const [passwordError, setPasswordError] = React.useState('');
 
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', (e) => {
+      // Do something
+      if (e.data.closing) {
+        clearFields();
+      }
+    });
+  
+    return unsubscribe;
+  }, [navigation]);
+
   const onCancelPress = () => {
     console.log("TODO: cancel pressed.");
   }
@@ -24,6 +35,10 @@ const LoginScreen = ({ navigation }) => {
   }
 
   const onLoginPress = async () => {
+    // for testing
+    navigation.navigate('Home');
+    return;
+    
     // input checking
     let isValid = true;
     if (!email) {
