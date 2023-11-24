@@ -3,8 +3,14 @@ import authHeader from './auth-header';
 import { API_URL } from '@env';
 
 class UserService {
-  getProblems() {
-    return axios.get(API_URL + 'problems', { headers: authHeader() });
+  async getProblems() {
+    // console.log("header!")
+    // console.log(await authHeader());
+    return axios.get(API_URL + '/problems', { headers: await authHeader() });
+  }
+
+  async createProblem() {
+    return axios.post(API_URL + '/problems', { headers: await authHeader() });
   }
 }
 

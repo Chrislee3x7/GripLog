@@ -3,16 +3,22 @@ import { Card, Text, Button, FAB } from 'react-native-paper';
 import { ScrollView, View, Image } from 'react-native'
 import NewProblemModal from './NewProblemModal';
 import { useTheme } from 'react-native-paper';
+import UserService from '../services/user.service';
+
 
 const ProblemListView = ({ navigation }) => {
 
   const titleVariant = "titleMedium";
   const theme = useTheme();
 
+  const [problems, setProblems] = useState([]);
+
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', (e) => {
+    const unsubscribe = navigation.addListener('focus', async (e) => {
       // Do something
       console.log("in listener");
+      const problems = await UserService.getProblems();
+      console.log(problems.data);
       
     });
   

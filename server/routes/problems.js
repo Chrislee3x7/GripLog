@@ -3,6 +3,7 @@ const router = express.Router();
 const Problem = require('../models/problem');
 const User = require('../models/user');
 const multer = require('multer');
+const jwt = require('jsonwebtoken');
 const { default: mongoose } = require('mongoose');
 // const upload = multer({ dest: 'upload/' });
 
@@ -36,15 +37,22 @@ var uploadOptions = multer({storage: storage});
 // Initial route that a Get request will take.
 // Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
-router.get('/', async (req, res) => {
-  // gets all Problems of this user (only color grade and name)
-  // check user_Id first
-  const user = await User.findById(req.body.user_id);
-  console.log(req.body);
-  if (!user) return res.status(400).send('User is invalid!');
 
-  const query = { user_id: req.body.user_id }
-  const problemList = await Problem.find(query).select('color grade name',);
+// gets all Problems of this user (only color grade and name location)
+router.get('/', async (req, res) => {
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('x-access-token');
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+
+  console.log("got userId", userId)
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  const query = { user_id: userId }
+  const problemList = await Problem.find(query).select('color grade name location',);
   if (!problemList) {
     return res.status(500).json({success: false});
   }
@@ -63,14 +71,21 @@ router.get('/:id', async (req, res) => {
 // create a new problem
 router.post('/', uploadOptions.array('images', 5), async (req, res) => {
   // check user_Id first
-  const user = await User.findById(req.body.user_id);
-  if (!user) return res.status(400).send('User is invalid!');
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('x-access-token');
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  
+  if (!userId) return res.status(400).send('User is invalid!');
 
   // Make sure there is at least one image
   const files = req.files;
-  if (files.length == 0) {
-    return res.status(400).send('No images in the request!');
-  }
+  // if (!files || files.length == 0) {
+  //   return res.status(400).send('No images in the request!');
+  // }
   // set the imagePath variable to have all image paths of the images uploaded
   let imagePaths = [];
   if (files) {
@@ -81,7 +96,7 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
   }
 
   const problem = new Problem({
-    user_id: req.body.user_id,
+    user_id: userId,
     name: req.body.name,
     grade: req.body.grade,
     color: req.body.color,

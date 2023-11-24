@@ -21,6 +21,8 @@ app.use(cors());
 // allow all http requests to be passed from any other origin
 app.options('*', cors());
 
+app.disable('etag');
+
 // Middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
@@ -32,6 +34,7 @@ app.use('/public/uploads', express.static(__dirname + '/public/uploads')); // St
 const problemsRoutes = require('./routes/problems');
 const usersRoutes = require('./routes/users');
 const attemptsRoutes = require('./routes/attempts');
+const { application } = require('express');
 
 const api = process.env.API_URL;
 

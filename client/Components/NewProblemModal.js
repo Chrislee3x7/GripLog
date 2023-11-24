@@ -1,22 +1,98 @@
-import React from 'react'
-import { Modal, IconButton, Portal, Text, Icon, Card, ToggleButton } from 'react-native-paper';
-import { View, Image, ScrollView, Pressable } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react'
+import { Modal, IconButton, Portal, Text, Icon, Card, ToggleButton, TextInput, Button } from 'react-native-paper';
+import { View, Image, ScrollView, Pressable, Keyboard } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
-import { useSharedValue } from 'react-native-reanimated';
-import { Slider } from 'react-native-awesome-slider';
+import Slider from '@react-native-community/slider';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 // import Camera from 'react-native-camera';
 
 const NewProblemModal = ({ visible, setVisible}) => {
 
   const theme = useTheme();
-  const [colorSelected, setColorSelected] = React.useState("");
+  
   const selectedIconColor = "#e7e0ec";
   const selectedIconName = "check";
 
-  const grade = useSharedValue(0);
+  const [color, setColor] = useState("");
+  const [grade, setGrade] = useState(0);
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
 
+  const [colorError, setColorError] = useState("");
+  const [gradeError, setGradeError] = useState("");
+  const [locationError, setLocationError] = useState("");
+
+  const [keyboardStatus, setKeyboardStatus] = useState("");
+
+  useEffect(() => {
+    const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus('Keyboard Shown');
+    });
+    const hideKeyboard = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus('Keyboard Hidden');
+    })
+
+    return () => {
+      showKeyboard.remove();
+      hideKeyboard.remove();
+    }
+  }, []);
+
+  const clearFields = () => {
+    setColor("");
+    setGrade(0);
+    setName("");
+    setLocation("")
+  }
+
+  const onAddLocationPress = () => {
+
+  }
+ 
+  const onCancelPress = () => {
+    setVisible(false);
+    clearFields();
+  }
+
+  const onCreatePress = () => {
+    // do error check
+    let isValid = true;
+    if (!color) {
+      isValid = false;
+      setColorError('Please choose a color!');
+    } else {
+      setColorError('');
+    }
+    if (!grade) {
+      isValid = false;
+      setGradeError('Please choose a grade!')
+    } else {
+      setGradeError('');
+    }
+    if (!location) {
+      isValid = false; 
+      setLocationError('Please choose a location!');
+    } else {
+      setPasswordError('');
+    }
+  
+    // if anything is invalid, do not make request, simply return
+    if (!isValid) return; 
+
+    // send data to server
+  }
+
+  const testData = [
+    {key:'1', value:'Mobiles'},
+    {key:'2', value:'Appliances'},
+    {key:'3', value:'Cameras'},
+    {key:'4', value:'Computers', disabled:true},
+    {key:'5', value:'Vegetables'},
+    {key:'6', value:'Diary Products'},
+    {key:'7', value:'Drinks'},
+  ];
 
   return (
     <View>
@@ -27,69 +103,114 @@ const NewProblemModal = ({ visible, setVisible}) => {
               <Text className="my-6 ml-6 grow self-end" variant="headlineMedium">Create Problem</Text>
               <IconButton icon="close" size={28} className=" shrink self-start mt-4 mr-4" onPress={() => setVisible(false)}/>
             </View>
-            <ScrollView showsVerticalScrollIndicator="false">
-              <View className="flex column gap-y-2">
-                <ScrollView showsHorizontalScrollIndicator="false" horizontal className="x-2">
-                  <View className="flex-row grow w-max px-4 gap-x-2">
-                    <Pressable onPress={() => {console.log("open camera")}}>
-                      <View
-                        className="flex rounded-lg w-24 h-48 border-dashed border-2 border-blue-500 items-center justify-center">
-                        <MaterialCommunityIcons name="camera" size={32} className=""/>
-                      </View>
-                    </Pressable>
-                    <Image
-                      className="rounded-lg w-24 h-48"
-                      resizeMode="cover"
-                      source={{
-                        uri: 'https://wallpapers.com/images/hd/vertical-sunset-shade-mountain-i3d1yb2udkq9rn59.jpg'
-                      }}/>
-                    <Image
-                      className="rounded-lg w-24 h-48"
-                      resizeMode="cover"
-                      source={{
-                        uri: 'https://i.pinimg.com/736x/c8/7d/5c/c87d5c06b2eca33d662f289d61b7f01d.jpg'
-                      }}/>
-                    <Image
-                      className="rounded-lg w-24 h-48"
-                      resizeMode="cover"
-                      source={{
-                        uri: 'https://wallpapershome.com/images/pages/pic_v/16241.jpg'
-                      }}/>
-                    <Image
-                      className="rounded-lg w-24 h-48"
-                      resizeMode="cover"
-                      source={{
-                        uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZy3elTi_98zFXaf9OZLWkXsHpZPnqtLQsjw&usqp=CAU'
-                      }}/>
-                    
+            
+            <ScrollView 
+              className=""
+              showsVerticalScrollIndicator="false" 
+              scrollToOverflowEnabled
+              contentContainerStyle={{paddingBottom: 80}}>
+              <ScrollView showsHorizontalScrollIndicator="false" horizontal className="mb-2">
+                <View className="flex-row grow w-max px-4 gap-x-2">
+                  <Pressable onPress={() => {console.log("open camera")}}>
+                    <View
+                      className="flex rounded-lg w-24 h-48 border-dashed border-2 border-blue-500 items-center justify-center">
+                      <MaterialCommunityIcons name="camera" size={32} color="#3b82f6" className=""/>
+                    </View>
+                  </Pressable>
+                  <Image
+                    className="rounded-lg w-24 h-48"
+                    resizeMode="cover"
+                    source={{
+                      uri: 'https://wallpapers.com/images/hd/vertical-sunset-shade-mountain-i3d1yb2udkq9rn59.jpg'
+                    }}/>
+                  <Image
+                    className="rounded-lg w-24 h-48"
+                    resizeMode="cover"
+                    source={{
+                      uri: 'https://i.pinimg.com/736x/c8/7d/5c/c87d5c06b2eca33d662f289d61b7f01d.jpg'
+                    }}/>
+                  <Image
+                    className="rounded-lg w-24 h-48"
+                    resizeMode="cover"
+                    source={{
+                      uri: 'https://wallpapershome.com/images/pages/pic_v/16241.jpg'
+                    }}/>
+                  <Image
+                    className="rounded-lg w-24 h-48"
+                    resizeMode="cover"
+                    source={{
+                      uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZy3elTi_98zFXaf9OZLWkXsHpZPnqtLQsjw&usqp=CAU'
+                    }}/>
+                </View>
+              </ScrollView>
+              {/* after images */}
+              <View className="my-2 mx-4 gap-y-2">
+                <Card mode="contained" className="">
+                  <Text variant="titleMedium" className="mx-4 mt-2">Color</Text>
+                  <ScrollView showsHorizontalScrollIndicator="false" horizontal className="">
+                    <View className="flex-row gap-x-2 mt-2 mb-4 mx-2">
+                      <ToggleButton icon={color == "red" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => setColor("red")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "ora" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => setColor("ora")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "yel" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => setColor("yel")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "gre" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => setColor("gre")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "blu" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => setColor("blu")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "pur" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => setColor("pur")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "pin" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => setColor("pin")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "bro" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => setColor("bro")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "bla" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => setColor("bla")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "whi" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => setColor("whi")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                    </View>
+                  </ScrollView>
+                </Card>
+                <Card mode="contained" >
+                  <View className="flex-row justify-between">
+                    <Text variant="titleMedium" className="mx-4 mt-2">Grade</Text>
+                    <Text variant="titleMedium" className="self-center mx-4 mt-2">{grade}</Text>
                   </View>
-                </ScrollView>
-                <View className="m-2 gap-y-2">
-                  <Card mode="contained" className="">
-                    <Text variant="titleSmall" className="mx-4 mt-2">Color</Text>
-                    <ScrollView showsHorizontalScrollIndicator="false" horizontal className="x-2">
-                      <View className="flex-row gap-x-2 mt-2 mb-4 mx-2">
-                        <ToggleButton icon={colorSelected == "red" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => setColorSelected("red")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "ora" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => setColorSelected("ora")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "yel" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => setColorSelected("yel")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "gre" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => setColorSelected("gre")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "blu" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => setColorSelected("blu")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "pur" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => setColorSelected("pur")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "pin" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => setColorSelected("pin")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "bro" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => setColorSelected("bro")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "bla" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => setColorSelected("bla")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                        <ToggleButton icon={colorSelected == "whi" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => setColorSelected("whi")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      </View>
-                    </ScrollView>
-                  </Card>
-                  <Card mode="contained">
-                    <Text variant="titleSmall" className="mx-4 mt-2">Grade</Text>
-                      <Slider
-                        progress={grade}
-                        minimumValue={0}
-                        maximumValue={17}
-                      />
-                  </Card>
+                  <View className="mx-4 my-2">
+                    <Slider
+                      className=""
+                      minimumValue={0}
+                      maximumValue={17}
+                      step={1}
+                      tapToSeek={true}
+                      onValueChange={(pos) => {setGrade(pos); console.log(pos)}}
+                    />
+                  </View>
+                </Card>
+                <Card mode="contained">
+                  <Text variant="titleMedium" className="mx-4 mt-2">Name</Text>
+                  <TextInput
+                    className="mt-2 mb-4 mx-4"
+                    onChange={(e) => setName(e)}
+                    mode={'outlined'}
+                    label='Problem Name'
+                  />
+                </Card>
+                <Card mode="contained">
+                  <Text variant="titleMedium" className="mx-4 mt-2">Location</Text>
+                  <View className="flex flex-row place-center items-center">
+                    <View className="ml-4 mt-2 mb-4 grow">
+                      <SelectList
+                        boxStyles={{borderRadius: 4, backgroundColor: "#fffbfe", paddingVertical: 12}}
+                        dropdownStyles={{borderRadius: 4, marginTop: 4}}
+                        inputStyles={{fontSize: 16, color: "#55525b"}}
+                        searchicon={<Icon/>}
+                        arrowicon={<MaterialCommunityIcons name="chevron-down"size={18} />}
+                        maxHeight={120}
+                        placeholder="Select Option"
+                        searchPlaceholder="Search"
+                        setSelected={(val) => {setLocation(val); console.log(val)}} 
+                        data={testData}
+                        save="value"/>
+                    </View>
+                    <IconButton className="mt-2 mb-4 mr-2 place-self-center" icon="plus"
+                      onPress={() => onAddLocationPress()}/>
+                  </View>
+                </Card>
+                <View className="flex-row gap-x-2">
+                  <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => onCancelPress()}>Cancel</Button>
+                  <Button mode="contained" className="shrink w-1/2" onPress={() => onCreatePress()}>Create</Button>
                 </View>
               </View>
             </ScrollView>

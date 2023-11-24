@@ -36,8 +36,8 @@ const LoginScreen = ({ navigation }) => {
 
   const onLoginPress = async () => {
     // for testing
-    navigation.navigate('Home');
-    return;
+    // navigation.navigate('Home');
+    // return;
     
     // input checking
     let isValid = true;
