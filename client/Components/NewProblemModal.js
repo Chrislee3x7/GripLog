@@ -149,16 +149,16 @@ const NewProblemModal = ({ visible, setVisible}) => {
                   <Text variant="titleMedium" className="mx-4 mt-2">Color</Text>
                   <ScrollView showsHorizontalScrollIndicator="false" horizontal className="">
                     <View className="flex-row gap-x-2 mt-2 mb-4 mx-2">
-                      <ToggleButton icon={color == "red" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => setColor("red")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "ora" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => setColor("ora")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "yel" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => setColor("yel")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "gre" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => setColor("gre")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "blu" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => setColor("blu")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "pur" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => setColor("pur")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "pin" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => setColor("pin")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "bro" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => setColor("bro")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "bla" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => setColor("bla")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "whi" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => setColor("whi")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#c4342d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => setColor("#c4342d")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#f67200" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => setColor("#f67200")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#f8e115" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => setColor("#f8e115")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#7bb35d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => setColor("#7bb35d")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#69abce" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => setColor("#69abce")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#7c609c" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => setColor("#7c609c")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#ffbdc4" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => setColor("#ffbdc4")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#644117" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => setColor("#644117")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#141414" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => setColor("#141414")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#fcfdf5" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => setColor("#fcfdf5")} className="w-10 h-10 border-blue-500 rounded-full"/>
                     </View>
                   </ScrollView>
                 </Card>
