@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import ProblemListView from './ProblemListView';
-import { View } from 'react-native';
-import { FAB } from 'react-native-paper';
-import NewProblemModal from './NewProblemModal';
+import ProblemDetailScreen from './ProblemDetailScreen'
+// import { View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import RegisterScreen from './RegisterScreen';
 
 
-const ProblemScreen = ({ navigation }) => {
+const ProblemScreen = () => {
 
-  const [newProblemModalIsVisible, setNewProblemModalIsVisible] = React.useState(false);
-
-  
+  const StackI = createNativeStackNavigator();
 
   return (
-    <View className="relative h-full">
-      <ProblemListView navigation={navigation} newProblemModalIsVisible={newProblemModalIsVisible}/>
-      <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
-      <NewProblemModal visible={newProblemModalIsVisible} setVisible={setNewProblemModalIsVisible}/>
-    </View>
+    <StackI.Navigator className="ml-8 mr-8" initialRouteName="ProblemList" 
+      screenOptions={{
+        headerShown: false
+      }}>
+      <StackI.Screen name="ProblemList" component={ProblemListView} />
+      <StackI.Screen name="ProblemDetail" component={ProblemDetailScreen} />
+      
+      {/* <Stack.Screen name="Register" component={RegisterScreen}/>  */}
+      {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
+    </StackI.Navigator>
   )
 }
 

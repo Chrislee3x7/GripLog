@@ -13,6 +13,7 @@ const LoginScreen = ({ navigation }) => {
   const [passwordError, setPasswordError] = React.useState('');
 
   React.useEffect(() => {
+  
     const unsubscribe = navigation.addListener('transitionEnd', (e) => {
       // Do something
       if (e.data.closing) {

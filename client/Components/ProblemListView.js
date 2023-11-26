@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Card, Text, Button, FAB } from 'react-native-paper';
+import { Card, Text, Button, FAB, useTheme } from 'react-native-paper';
 import { ScrollView, View, Image } from 'react-native'
-import { useTheme } from 'react-native-paper';
 import UserService from '../services/user.service';
 import ProblemCard from './ProblemCard';
+import NewProblemModal from './NewProblemModal';
 
 
-const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
+const ProblemListView = ({ navigation }) => {
 
   const theme = useTheme();
 
   const [problems, setProblems] = useState([]);
+  const [newProblemModalIsVisible, setNewProblemModalIsVisible] = React.useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -27,6 +28,11 @@ const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
     setProblems(problems.data);
   }
 
+  const onProblemPress = (id, color, grade, name) => {
+    console.log(`Problem ${id} ${color} ${grade} ${name} pressed`);
+    navigation.navigate("ProblemDetail", { id: id, color: color, grade: grade, name: name });
+  }
+
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>
       <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Problems</Text>
@@ -34,6 +40,7 @@ const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
         <View className="flex-col overflow-auto">
           {problems.length > 0 ? problems.map(problem => (
             <ProblemCard
+              id={problem._id}
               grade={problem.grade}
               color={problem.color}
               name={problem.name}
@@ -42,6 +49,7 @@ const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
               attemptCount={problem.attemptCount ? problem.attemptCount : 0}
               lastAttemptDate={problem.lastAttemptDate ? problem.lastAttemptDate : 0}
               key={problem._id}
+              onPress={(id, color, grade, name) => onProblemPress(id, color, grade, name)}
               />
           )):
           <View>
@@ -50,6 +58,8 @@ const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
         }
         </View>
       </ScrollView>
+      <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
+      <NewProblemModal visible={newProblemModalIsVisible} setVisible={setNewProblemModalIsVisible}/>
     </View>
   )
 }

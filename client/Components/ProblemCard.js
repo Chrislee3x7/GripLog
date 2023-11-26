@@ -1,13 +1,13 @@
 import { View, Image } from 'react-native';
 import { Card, Text } from 'react-native-paper'
 
-const ProblemCard = ({ grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate }) => {
+const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress }) => {
   const date = new Date(lastAttemptDate);
   const dateString = lastAttemptDate == 0 ? "N/A" : date.toLocaleDateString();
 
   return (
     <View className="pb-2">
-      <Card mode="contained">
+      <Card mode="contained" onPress={() => onPress(id, color, grade, name)}>
         <View className="flex-row content-start">
           <Image
             className="rounded-lg w-1/5 m-1"
