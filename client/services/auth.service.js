@@ -39,11 +39,11 @@ class AuthService {
       email,
       password
     })
-    .then((res) => {
+    .then(res => {
       console.log("register was successful.");
       return res;
     })
-    .catch((err) => {
+    .catch(err => {
       // console.warn("about to return err STATUS!!");
       // console.log(err.response);
       // throw err;

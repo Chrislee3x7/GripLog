@@ -1,33 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Card, Text, Button, FAB } from 'react-native-paper';
 import { ScrollView, View, Image } from 'react-native'
 import { useTheme } from 'react-native-paper';
 import UserService from '../services/user.service';
 import ProblemCard from './ProblemCard';
-import NewProblemModal from './NewProblemModal';
 
 
-const ProblemListView = ({ navigation }) => {
+const ProblemListView = ({ navigation, newProblemModalIsVisible }) => {
 
-  const titleVariant = "titleMedium";
   const theme = useTheme();
 
   const [problems, setProblems] = useState([]);
 
-  React.useEffect(() => {
-    
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProblems();
 
-    const unsubscribe = navigation.addListener('focus', async (e) => {
-      // Do something
-      console.log("in listener");
-      const problems = await UserService.getProblems();
-      console.log(problems.data);
-      setProblems(problems.data);
-      
-    });
-  
-    return unsubscribe;
-  }, [navigation]);
+      return;
+    }, [newProblemModalIsVisible])
+  );
+
+  const fetchProblems = async () => {
+    const problems = await UserService.getProblems();
+    // console.log(problems.data);
+    setProblems(problems.data);
+  }
 
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>

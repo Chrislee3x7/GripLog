@@ -13,7 +13,7 @@ const ProblemScreen = ({ navigation }) => {
 
   return (
     <View className="relative h-full">
-      <ProblemListView navigation={navigation}/>
+      <ProblemListView navigation={navigation} newProblemModalIsVisible={newProblemModalIsVisible}/>
       <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
       <NewProblemModal visible={newProblemModalIsVisible} setVisible={setNewProblemModalIsVisible}/>
     </View>

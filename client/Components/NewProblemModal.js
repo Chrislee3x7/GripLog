@@ -5,6 +5,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useTheme } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { SelectList } from 'react-native-dropdown-select-list';
+import UserService from '../services/user.service';
+import axios from 'axios';
+import { API_URL } from '@env';
+
 
 // import Camera from 'react-native-camera';
 
@@ -14,17 +18,20 @@ const NewProblemModal = ({ visible, setVisible}) => {
   
   const selectedIconColor = "#e7e0ec";
   const selectedIconName = "check";
-
+  
   const [color, setColor] = useState("");
   const [grade, setGrade] = useState(0);
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-
+  
   const [colorError, setColorError] = useState("");
   const [gradeError, setGradeError] = useState("");
   const [locationError, setLocationError] = useState("");
+  
+  const [locationList, setLocationList] = useState([]);
 
   const [keyboardStatus, setKeyboardStatus] = useState("");
+
 
   useEffect(() => {
     const showKeyboard = Keyboard.addListener('keyboardDidShow', () => {
@@ -33,6 +40,14 @@ const NewProblemModal = ({ visible, setVisible}) => {
     const hideKeyboard = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardStatus('Keyboard Hidden');
     })
+
+    // get locations and set them
+    const testLocs = [
+      {key:'1', value:'Purdue Corec'},
+      {key:'2', value:'Santa Clara Movement'},
+    ];
+    
+    setLocationList(testLocs);
 
     return () => {
       showKeyboard.remove();
@@ -56,7 +71,8 @@ const NewProblemModal = ({ visible, setVisible}) => {
     clearFields();
   }
 
-  const onCreatePress = () => {
+
+  const onCreatePress = async () => {
     // do error check
     let isValid = true;
     if (!color) {
@@ -75,33 +91,28 @@ const NewProblemModal = ({ visible, setVisible}) => {
       isValid = false; 
       setLocationError('Please choose a location!');
     } else {
-      setPasswordError('');
+      setLocationError('');
     }
   
     // if anything is invalid, do not make request, simply return
     if (!isValid) return; 
 
     // send data to server
-  }
 
-  const testData = [
-    {key:'1', value:'Mobiles'},
-    {key:'2', value:'Appliances'},
-    {key:'3', value:'Cameras'},
-    {key:'4', value:'Computers', disabled:true},
-    {key:'5', value:'Vegetables'},
-    {key:'6', value:'Diary Products'},
-    {key:'7', value:'Drinks'},
-  ];
+    const res = await UserService.createProblem(color, grade, name, location);
+    setVisible(false);
+    clearFields();
+
+  }
 
   return (
     <View>
       <Portal>
-        <Modal onDismiss={() => setVisible(false)} visible={visible} className="h-screen backdrop-opacity-0	">
+        <Modal onDismiss={() => onCancelPress()} visible={visible} className="h-screen backdrop-opacity-0	">
           <View className="flex bg-white h-screen" style={{backgroundColor: theme.colors.surface}}>
             <View className="flex-row w-full">
               <Text className="my-6 ml-6 grow self-end" variant="headlineMedium">Create Problem</Text>
-              <IconButton icon="close" size={28} className=" shrink self-start mt-4 mr-4" onPress={() => setVisible(false)}/>
+              <IconButton icon="close" size={28} className=" shrink self-start mt-4 mr-4" onPress={() => onCancelPress()}/>
             </View>
             
             <ScrollView 
@@ -182,7 +193,7 @@ const NewProblemModal = ({ visible, setVisible}) => {
                   <Text variant="titleMedium" className="mx-4 mt-2">Name</Text>
                   <TextInput
                     className="mt-2 mb-4 mx-4"
-                    onChange={(e) => setName(e)}
+                    onChangeText={(e) => setName(e)}
                     mode={'outlined'}
                     label='Problem Name'
                   />
@@ -201,7 +212,7 @@ const NewProblemModal = ({ visible, setVisible}) => {
                         placeholder="Select Option"
                         searchPlaceholder="Search"
                         setSelected={(val) => {setLocation(val); console.log(val)}} 
-                        data={testData}
+                        data={locationList}
                         save="value"/>
                     </View>
                     <IconButton className="mt-2 mb-4 mr-2 place-self-center" icon="plus"

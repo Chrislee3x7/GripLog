@@ -42,17 +42,17 @@ var uploadOptions = multer({storage: storage});
 router.get('/', async (req, res) => {
   // check user_Id first
   // get token 'x-access-token' from header
-  const token = req.get('x-access-token');
+  const token = req.get('Authorization').split(' ')[1];
   // decode jwt
-  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   // get the user from the userId from the decoded jwt
   const userId = await User.findById(decoded.userId).select('_id');
 
-  console.log("got userId", userId)
+  // console.log("got userId", userId)
   if (!userId) return res.status(400).send('User is invalid!');
 
   const query = { user_id: userId }
-  const problemList = await Problem.find(query).select('color grade name location',);
+  const problemList = await Problem.find(query).select('color grade name location attemptCount',);
   if (!problemList) {
     return res.status(500).json({success: false});
   }
@@ -70,12 +70,13 @@ router.get('/:id', async (req, res) => {
 
 // create a new problem
 router.post('/', uploadOptions.array('images', 5), async (req, res) => {
+  console.log("got to backend post func");
   // check user_Id first
   // check user_Id first
   // get token 'x-access-token' from header
-  const token = req.get('x-access-token');
+  const token = req.get('Authorization').split(' ')[1];
   // decode jwt
-  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   // get the user from the userId from the decoded jwt
   const userId = await User.findById(decoded.userId).select('_id');
   
@@ -100,11 +101,13 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
     name: req.body.name,
     grade: req.body.grade,
     color: req.body.color,
-    attemptCount: req.body.attemptCount,
+    attemptCount: req.body.attemptCount ? req.body.attemptCount : 0,
     images: imagePaths,
     location: req.body.location,
-    dateCompleted: req.body.dateCompleted
+    dateCompleted: 0
   });
+
+  console.log("defined problem in server");
 
   const createdProblem = await problem.save();
   if (!createdProblem) {
