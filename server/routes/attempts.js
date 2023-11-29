@@ -48,13 +48,25 @@ router.post('/', async (req, res) => {
     problem_id: problemId,
     date: req.body.date,
     notes: req.body.notes,
-    is_send: req.body.is_send
+    isSend: req.body.is_send
   });
 
   const createdAttempt = await attempt.save();
   if (!createdAttempt) {
     return res.status(400).send('Attempt could not be created!');
   }
+
+  console.log("attempt.is_send", attempt.isSend);
+  // need to update problem
+  const updateRes = await Problem.findByIdAndUpdate(problemId, { 
+    attemptCount: problem.attemptCount + 1, 
+    sendCount: attempt.isSend ? problem.sendCount + 1 : problem.sendCount,
+    dateCompleted: problem.dateCompleted == 0 && attempt.isSend ? attempt.date : problem.dateCompleted,
+    lastAttemptDate: attempt.date
+  }, {new: true});
+
+  console.log(updateRes)
+
   res.status(201).json(createdAttempt);
 });
 

@@ -28,7 +28,7 @@ const ProblemDetailScreen = ({ navigation, route }) => {
 
   const fetchAttempts = async () => {
     const attempts = await UserService.getAttempts(id);
-    console.log("Attempts!!!!: ", attempts.data);
+    // console.log("Attempts!!!!: ", attempts.data);
     setAttempts(attempts.data);
   }
 

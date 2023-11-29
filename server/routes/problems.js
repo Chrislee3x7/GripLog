@@ -52,7 +52,7 @@ router.get('/', async (req, res) => {
   if (!userId) return res.status(400).send('User is invalid!');
 
   const query = { user_id: userId }
-  const problemList = await Problem.find(query).select('color grade name location attemptCount',);
+  const problemList = await Problem.find(query).select('color grade name location attemptCount sendCount lastAttemptDate',);
   if (!problemList) {
     return res.status(500).json({success: false});
   }
@@ -101,7 +101,8 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
     name: req.body.name,
     grade: req.body.grade,
     color: req.body.color,
-    attemptCount: req.body.attemptCount ? req.body.attemptCount : 0,
+    attemptCount: 0,
+    sendCount: 0,
     images: imagePaths,
     location: req.body.location,
     dateCompleted: 0

@@ -14,7 +14,7 @@ const AttemptSchema = mongoose.Schema({
     type: String,
     default: ''
   },
-  is_send: {
+  isSend: {
     type: Boolean,
     required: true
   },

@@ -17,14 +17,14 @@ const ProblemListView = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       fetchProblems();
-
+      
       return;
     }, [newProblemModalIsVisible])
   );
 
   const fetchProblems = async () => {
     const problems = await UserService.getProblems();
-    // console.log(problems.data);
+    console.log(problems.data);
     setProblems(problems.data);
   }
 

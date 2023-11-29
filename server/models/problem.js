@@ -26,6 +26,12 @@ const ProblemSchema = mongoose.Schema({
       min: 0,
       max: 255
   },
+  sendCount: {
+    type: Number,
+    default: 0, // Initially 0 and depends on the count of attempts in attempts table
+    min: 0,
+    max: 255
+  },
   images: [{
     type: String,
   }],
@@ -38,6 +44,10 @@ const ProblemSchema = mongoose.Schema({
     required: false
   },
   dateCompleted: {
+    type: Date,
+    default: 0
+  },
+  lastAttemptDate: {
     type: Date,
     default: 0
   }
