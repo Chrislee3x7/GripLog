@@ -51,11 +51,11 @@ const ProblemListView = ({ navigation }) => {
               key={problem._id}
               onPress={(id, color, grade, name) => onProblemPress(id, color, grade, name)}
               />
-          )):
-          <View>
-            <Text>Get started by creating a new Problem!</Text>
-          </View>
-        }
+            )):
+            <View>
+              <Text>Get started by creating a new Problem!</Text>
+            </View>
+          }
         </View>
       </ScrollView>
       <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaViewBase, ScrollView, View } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
-import AttemptCard from "./AttemptCard"
+import AttemptCard from "./AttemptCard";
+import UserService from '../services/user.service';
 
 
 const ProblemDetailScreen = ({ navigation, route }) => {
@@ -16,11 +17,20 @@ const ProblemDetailScreen = ({ navigation, route }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log(id, color, grade, name)
+      // console.log(id, color, grade, name)
+      console.log("fetching attempts...");
+      fetchAttempts();
+      // Make request to get problem attempts
 
       return;
     }, [newAttemptModalIsVisible])
   );
+
+  const fetchAttempts = async () => {
+    const attempts = await UserService.getAttempts(id);
+    console.log("Attempts!!!!: ", attempts.data);
+    setAttempts(attempts.data);
+  }
 
   const onNewAttemptPress = () => {
     console.log("TODO: create new attempt");
@@ -46,25 +56,18 @@ const ProblemDetailScreen = ({ navigation, route }) => {
               <Text className="text-blue-500 self-center">New Attempt</Text>
             </View>
           </Card>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-          <AttemptCard
-            attemptDate={0}
-            notes="oh my god that was so hard."/>
-            
+          {attempts.length > 0 ? attempts.map(attempt => (
+            <AttemptCard
+              attemptDate={attempt.date}
+              notes={attempt.notes}
+              isSend={attempt.is_send}
+              key={attempt._id}
+              />
+            )):
+            <View>
+              <Text>Get started by creating a new Attempt!</Text>
+            </View>
+          }
         </View>
       </ScrollView>
     </View>

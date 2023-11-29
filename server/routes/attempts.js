@@ -6,42 +6,46 @@ const mongoose = require('mongoose');
 
 // Attempt routes below
 // get all attempts of a problem that have problem_id requested
+// router.get('/', async (req, res) => {
+//   console.log("req.body: ", req);
+//   console.log("got to attempt get!!");
+//   // check problem Id first
+//   const problem = await Problem.findById(req.body.problem_id);
+//   if (!problem) {
+//     return res.status(400).send('Problem is invalid!');
+//   }
+
+//   const query = { problem_id: req.body.problem_id }
+//   const attemptsList = await Attempt.find(query);
+//   if (!attemptsList) {
+//     return res.status(500).json({success: false});
+//   }
+//   res.status(200).send(attemptsList);
+// });
+
+// get attempt with problem_id requested
 router.get('/', async (req, res) => {
-  // check problem Id first
-  const problem = await Problem.findById(req.body.problem_id);
-  if (!problem) {
-    return res.status(400).send('Problem is invalid!');
+  const problemId = req.query.problem_id;
+  if (!mongoose.isValidObjectId(problemId)) {
+    return res.status(400).send('Problem ID is invalid!');
   }
-
-  const query = { problem_id: req.body.problem_id }
-  const attemptsList = await Attempt.find(query);
-  if (!attemptsList) {
-    return res.status(500).json({success: false});
-  }
-  res.status(200).send(attemptsList);
-});
-
-// get attempt with _id requested
-router.get('/:id', async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
-    return res.status(400).send('Attempt ID is invalid!');
-  }
-  const attempt = await Attempt.findById(req.params.id);
-  if (!attempt) {
-    return res.status(500).json({success: false});
-  }
-  res.status(200).send(attempt);
+  const attempts = await Attempt.find({ problem_id: problemId}).select("date is_send notes");
+  // if (!attempt) {
+  //   return res.status(500).json({success: false});
+  // }
+  res.status(200).send(attempts);
 });
 
 // post new attempt
 router.post('/', async (req, res) => {
   // check problem Id first
-  const problem = await Problem.findById(req.body.problem_id);
+  const problemId = req.query.problem_id;
+  const problem = await Problem.findById(problemId);
   if (!problem) return res.status(400).send('Problem is invalid!');
 
   // add a new attempt with problem_id
   const attempt = new Attempt({
-    problem_id: req.body.problem_id,
+    problem_id: problemId,
     date: req.body.date,
     notes: req.body.notes,
     is_send: req.body.is_send
