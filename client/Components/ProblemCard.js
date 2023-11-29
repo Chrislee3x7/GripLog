@@ -3,7 +3,9 @@ import { Card, Text } from 'react-native-paper'
 
 const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress }) => {
   const date = new Date(lastAttemptDate);
-  const dateString = lastAttemptDate == 0 ? "N/A" : date.toLocaleDateString();
+  const nullDate = new Date("9000-01-01");
+  console.log(date, nullDate);
+  const dateString = date.valueOf() == nullDate.valueOf() ? "N/A" : date.toLocaleDateString();
 
   return (
     <View className="pb-2">

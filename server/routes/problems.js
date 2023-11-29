@@ -38,7 +38,7 @@ var uploadOptions = multer({storage: storage});
 // Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
 
-// gets all Problems of this user (only color grade and name location)
+// gets all Problems of this user does aggregate function to find attempts data
 router.get('/', async (req, res) => {
   // check user_Id first
   // get token 'x-access-token' from header
@@ -51,12 +51,61 @@ router.get('/', async (req, res) => {
   // console.log("got userId", userId)
   if (!userId) return res.status(400).send('User is invalid!');
 
-  const query = { user_id: userId }
-  const problemList = await Problem.find(query).select('color grade name location attemptCount sendCount lastAttemptDate',);
-  if (!problemList) {
+  // const castUserId = (userId) => mongoose.Types.ObjectId(userId);
+  const query = { user_id: new mongoose.Types.ObjectId(userId) }
+  const problemOverviewList = await Problem.aggregate([{ 
+      $match: query
+    },
+    {
+      $lookup: {
+        from: "attempts",
+        localField: "_id",
+        foreignField: "problem_id",
+        as: "attempts"
+      }
+    },
+    {
+      $unwind: {
+        path: "$attempts",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: "$_id",
+        grade: { $max: "$grade" },
+        color: { $max: "$color" },
+        name: { $max: "$name" },
+        location: { $max: "$location" },
+        attemptCount: { $sum: { $cond: { if: { $gt: ["$attempts", undefined] }, then: 1, else: 0 } } },
+        sendCount: { $sum: { $cond: { if: "$attempts.isSend", then: 1, else: 0 } } },
+        lastAttemptDate: { $max: "$attempts.date" }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        grade: 1,
+        color: 1,
+        name: 1,
+        location: 1,
+        attemptCount: 1,
+        sendCount: 1,
+        lastAttemptDate: { $ifNull: [ "$lastAttemptDate", new Date("9000-01-01") ] }
+      }
+    },
+    {
+      $sort: {
+        lastAttemptDate: -1
+      }
+    }
+  ]).exec();
+  // console.log(problemOverviewList, "problem agg above");
+  // const problemList = await Problem.find(query).select('color grade name location');
+  if (!problemOverviewList) {
     return res.status(500).json({success: false});
   }
-  res.status(200).send(problemList);
+  res.status(200).send(problemOverviewList);
 });
 
 // get problem with _id requested
@@ -70,7 +119,6 @@ router.get('/:id', async (req, res) => {
 
 // create a new problem
 router.post('/', uploadOptions.array('images', 5), async (req, res) => {
-  console.log("got to backend post func");
   // check user_Id first
   // check user_Id first
   // get token 'x-access-token' from header

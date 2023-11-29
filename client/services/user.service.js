@@ -11,20 +11,22 @@ class UserService {
   }
 
   async getAttempts(problemId) {
+    const auth = await authHeader();
     console.log(problemId);
     return axios.get(`${API_URL}/attempts`, { params: 
       {
         problem_id: problemId
-      }
+      }, headers: auth
     });
   }
 
-  async createAttempt(date, notes, isSend) {
+  async createAttempt(problemId, date, notes, isSend) {
     const auth = await authHeader();
-    return axios.post(`${API_URL}/problems`, {
+    return axios.post(`${API_URL}/attempts`, {
+      problem_id: problemId,
       date: date,
       notes: notes,
-      is_send: isSend
+      isSend: isSend
     }, { headers: auth });
   }
 

@@ -23,13 +23,13 @@ const mongoose = require('mongoose');
 //   res.status(200).send(attemptsList);
 // });
 
-// get attempt with problem_id requested
+// get attempts with problem_id requested
 router.get('/', async (req, res) => {
   const problemId = req.query.problem_id;
   if (!mongoose.isValidObjectId(problemId)) {
     return res.status(400).send('Problem ID is invalid!');
   }
-  const attempts = await Attempt.find({ problem_id: problemId}).select("date is_send notes");
+  const attempts = await Attempt.find({ problem_id: problemId }).select("date isSend notes");
   // if (!attempt) {
   //   return res.status(500).json({success: false});
   // }
