@@ -79,6 +79,7 @@ router.get('/', async (req, res) => {
         location: { $max: "$location" },
         attemptCount: { $sum: { $cond: { if: { $gt: ["$attempts", undefined] }, then: 1, else: 0 } } },
         sendCount: { $sum: { $cond: { if: "$attempts.isSend", then: 1, else: 0 } } },
+        dateStarted: { $max: "$dateStarted" },
         lastAttemptDate: { $max: "$attempts.date" }
       }
     },
@@ -91,12 +92,14 @@ router.get('/', async (req, res) => {
         location: 1,
         attemptCount: 1,
         sendCount: 1,
+        dateStarted: 1,
         lastAttemptDate: { $ifNull: [ "$lastAttemptDate", new Date("9000-01-01") ] }
       }
     },
     {
       $sort: {
-        lastAttemptDate: -1
+        lastAttemptDate: -1,
+        dateStarted: -1
       }
     }
   ]).exec();

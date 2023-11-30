@@ -37,7 +37,7 @@ const ProblemListView = ({ navigation }) => {
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>
       <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Problems</Text>
       <ScrollView showsVerticalScrollIndicator="false">
-        <View className="flex-col overflow-auto">
+        <View className="flex-col overflow-auto mt-2">
           {problems.length > 0 ? problems.map(problem => (
             <ProblemCard
               id={problem._id}
@@ -53,7 +53,7 @@ const ProblemListView = ({ navigation }) => {
               />
             )):
             <View>
-              <Text>Get started by creating a new Problem!</Text>
+              <Text className="text-center" >Get started by creating a new Problem!</Text>
             </View>
           }
         </View>

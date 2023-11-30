@@ -72,6 +72,9 @@ const LoginScreen = ({ navigation }) => {
       <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Login</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="none"
+          blurOnSubmit
+          inputMode="email"
           mode={'outlined'}
           label='Email'
           value={email}
@@ -82,6 +85,8 @@ const LoginScreen = ({ navigation }) => {
       </View>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="none"
+          blurOnSubmit
           mode={'outlined'}
           label='Password'
           value={password}

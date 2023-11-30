@@ -104,11 +104,15 @@ const RegisterScreen = ({ navigation }) => {
     }
   }
 
+  // Try onSubmitEditing to go to next text box or if last, submit
+
   return (
     <View className="mt-12 ml-8 mr-8">
       <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Register</Text>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="words"
+          blurOnSubmit
           mode={'outlined'}
           label='Name'
           value={name}
@@ -119,6 +123,9 @@ const RegisterScreen = ({ navigation }) => {
       </View>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="none"
+          blurOnSubmit
+          inputMode="email"
           mode={'outlined'}
           label='Email'
           value={email}
@@ -129,6 +136,8 @@ const RegisterScreen = ({ navigation }) => {
       </View>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="none"
+          blurOnSubmit
           mode={'outlined'}
           label='Username'
           value={username}
@@ -139,6 +148,8 @@ const RegisterScreen = ({ navigation }) => {
       </View>
       <View className="mb-4 ml-4 mr-4">
         <TextInput
+          autoCapitalize="none"
+          blurOnSubmit
           mode={'outlined'}
           label='Password'
           value={password}
