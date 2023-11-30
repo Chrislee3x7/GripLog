@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaViewBase, ScrollView, View, Divider } from "react-native";
+import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
 import AttemptCard from "./AttemptCard";
 import UserService from '../services/user.service';
-import NewAttemptModal from './NewAttemptModal'
 
 
 const ProblemDetailScreen = ({ navigation, route }) => {
@@ -14,7 +13,6 @@ const ProblemDetailScreen = ({ navigation, route }) => {
   const { id, color, grade, name } = route.params;
   
   const [attempts, setAttempts] = useState([])
-  const [newAttemptModalIsVisible, setNewAttemptModalIsVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -24,17 +22,21 @@ const ProblemDetailScreen = ({ navigation, route }) => {
       // Make request to get problem attempts
 
       return;
-    }, [newAttemptModalIsVisible])
+    }, [])
   );
 
   const fetchAttempts = async () => {
     const attempts = await UserService.getAttempts(id);
-    // console.log("Attempts!!!!: ", attempts.data);
+    console.log("Attempts!!!!: ", attempts.data);
     setAttempts(attempts.data);
   }
 
-  const onNewAttemptPress = () => {
-    setNewAttemptModalIsVisible(true);
+  const onNewAttemptPress = async () => {
+    // create new attempt through server
+    const newAttempt = await UserService.createAttempt(id, Date.now(), "", false);
+    // once created, we fetch
+    fetchAttempts();
+    // setAttempts(attempts => [newElement, ...attempts]);
   }
 
   return (
@@ -47,21 +49,22 @@ const ProblemDetailScreen = ({ navigation, route }) => {
       <ScrollView showsVerticalScrollIndicator="false">
         <View className="flex-col overflow-auto mt-2">
           {/* image gallery here */}
-          <Card mode="" className="mb-2 border-blue-500 border-2 border-dashed"
-            onPress={() => onNewAttemptPress()}>
-            <View className="flex-row grow p-2">
-              <Icon
-                source="plus"
-                color="#3b82f6"
-                size={36}/>
-              <Text className="text-blue-500 self-center">New Attempt</Text>
-            </View>
-          </Card>
+          <TouchableOpacity onPress={() => onNewAttemptPress()} activeOpacity={0.5}>
+            <Card mode="" className="mb-2 border-blue-500 border-2 border-dashed">
+              <View className="flex-row grow p-2">
+                <Icon
+                  source="plus"
+                  color="#3b82f6"
+                  size={36}/>
+                <Text className="text-blue-500 self-center">New Attempt</Text>
+              </View>
+            </Card>
+          </TouchableOpacity>
           {attempts.length > 0 ? attempts.map(attempt => (
             <AttemptCard
               attemptDate={attempt.date}
               notes={attempt.notes}
-              isSend={attempt.is_send}
+              isSend={attempt.isSend}
               key={attempt._id}
             />
             )):

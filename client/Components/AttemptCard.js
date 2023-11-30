@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Animated } from 'react-native';
+import { View, Image, Animated, TouchableOpacity } from 'react-native';
 import { Card, Text, TextInput, Divider, Icon } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -53,37 +53,41 @@ const AttemptCard = ({ attemptDate, notes, isSend }) => {
         </View>
         <ExpandableView expanded={expanded}></ExpandableView>
       </Card> */}
-      <View className="items-center flex-row grow pb-2">
-        <View className=" mt-1">
-          {/* <Text className="" variant="titleLarge">Date: </Text> */}
-          <DateTimePicker
-            testID="dateTimePicker"
-            maximumDate={new Date(Date.now())}
-            value={date}
-            mode="date"
-            is24Hour={false}
-            onChange={onChange}
+      <TouchableOpacity onPress={() => setExpanded(!expanded)} activeOpacity={1}>
+        <View className="items-center flex-row grow pb-2">
+          <View className=" mt-1">
+            {/* <Text className="" variant="titleLarge">Date: </Text> */}
+            <DateTimePicker
+              testID="dateTimePicker"
+              maximumDate={new Date(Date.now())}
+              value={date}
+              mode="date"
+              is24Hour={false}
+              onChange={onChange}
+            />
+          </View>
+          <TextInput 
+            className="whitespace-normal flex-initial grow m-2"
+            mode="outlined"
+            autoCorrect={false}
+            spellCheck={false}
+            editable
+            maxLength={250}
+            multiline
+            numberOfLines={10}
+            label="Notes"
+            multiline
+            value={notes}
+            dense
           />
+          <View className="mt-1">
+            {isSend ? <Icon source="check" size={32}/> : <Icon source="close" size={32}/>}
+          </View>
+          
         </View>
-        <TextInput 
-          className="whitespace-normal flex-initial grow m-2"
-          mode="outlined"
-          autoCorrect={false}
-          spellCheck={false}
-          editable
-          maxLength={250}
-          multiline
-          numberOfLines={10}
-          label="Notes"
-          multiline
-          dense
-        />
-        <View className="mt-1">
-          {isSend ? <Icon source="check" size={32}/> : <Icon source="close" size={32}/>}
-        </View>
-        
-      </View>
-      <Divider />
+        <ExpandableView expanded={expanded}></ExpandableView>
+        <Divider />
+      </TouchableOpacity>
     </View>
   );
 }; 

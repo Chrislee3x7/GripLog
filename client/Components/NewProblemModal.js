@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Modal, IconButton, Portal, Text, Icon, Card, ToggleButton, TextInput, Button } from 'react-native-paper';
-import { View, Image, ScrollView, Pressable, Keyboard } from 'react-native'
+import { View, Image, ScrollView, Keyboard, TouchableOpacity } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
@@ -122,12 +122,12 @@ const NewProblemModal = ({ visible, setVisible}) => {
               contentContainerStyle={{paddingBottom: 80}}>
               <ScrollView showsHorizontalScrollIndicator="false" horizontal className="mb-2">
                 <View className="flex-row grow w-max px-4 gap-x-2">
-                  <Pressable onPress={() => {console.log("open camera")}}>
+                  <TouchableOpacity onPress={() => {console.log("open camera")}} activeOpacity={0.5}>
                     <View
                       className="flex rounded-lg w-24 h-48 border-dashed border-2 border-blue-500 items-center justify-center">
                       <MaterialCommunityIcons name="camera" size={32} color="#3b82f6" className=""/>
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                   <Image
                     className="rounded-lg w-24 h-48"
                     resizeMode="cover"

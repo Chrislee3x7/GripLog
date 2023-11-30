@@ -1,7 +1,9 @@
-const Attempt = require('../models/attempt');
 const express = require('express');
-const Problem = require('../models/problem');
 const router = express.Router();
+const Attempt = require('../models/attempt');
+const Problem = require('../models/problem');
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 // Attempt routes below
@@ -38,17 +40,29 @@ router.get('/', async (req, res) => {
 
 // post new attempt
 router.post('/', async (req, res) => {
-  // check problem Id first
-  const problemId = req.query.problem_id;
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('Authorization').split(' ')[1];
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  // console.log("got userId", userId)
+  if (!userId) return res.status(400).send('User is invalid!');
+
+
+  // then check problem Id
+  const problemId = req.body.problem_id;
   const problem = await Problem.findById(problemId);
   if (!problem) return res.status(400).send('Problem is invalid!');
+
 
   // add a new attempt with problem_id
   const attempt = new Attempt({
     problem_id: problemId,
     date: req.body.date,
     notes: req.body.notes,
-    isSend: req.body.is_send
+    isSend: req.body.isSend
   });
 
   const createdAttempt = await attempt.save();

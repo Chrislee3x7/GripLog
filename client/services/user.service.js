@@ -21,6 +21,7 @@ class UserService {
   }
 
   async createAttempt(problemId, date, notes, isSend) {
+    console.log("got to user.service");
     const auth = await authHeader();
     return axios.post(`${API_URL}/attempts`, {
       problem_id: problemId,
