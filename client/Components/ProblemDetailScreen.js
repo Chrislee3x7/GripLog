@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
@@ -14,29 +14,42 @@ const ProblemDetailScreen = ({ navigation, route }) => {
   
   const [attempts, setAttempts] = useState([])
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // console.log(id, color, grade, name)
-      console.log("fetching attempts...");
-      fetchAttempts();
-      // Make request to get problem attempts
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // console.log(id, color, grade, name)
+  //     console.log("fetching attempts...");
+  //     fetchAttempts();
+  //     // Make request to get problem attempts
 
-      return;
-    }, [])
-  );
+  //     return;
+  //   }, [])
+  // );
+
+  useEffect(() => {
+    console.log("fetching attempts...");
+    fetchAttempts();
+    
+    return;
+  }, [])
 
   const fetchAttempts = async () => {
     const attempts = await UserService.getAttempts(id);
-    console.log("Attempts!!!!: ", attempts.data);
+    // console.log("Attempts!!!!: ", attempts.data);
     setAttempts(attempts.data);
   }
 
   const onNewAttemptPress = async () => {
     // create new attempt through server
-    const newAttempt = await UserService.createAttempt(id, Date.now(), "", false);
+    await UserService.createAttempt(id, Date.now(), "", false);
     // once created, we fetch
     fetchAttempts();
     // setAttempts(attempts => [newElement, ...attempts]);
+  }
+
+  const onEditAttempt = async (attemptId, date, notes, isSend) => {
+    await UserService.editAttempt(attemptId, date, notes, isSend);
+    // console.log("fetching attempts after edit...", fetched);
+    fetchAttempts();
   }
 
   return (
@@ -60,11 +73,23 @@ const ProblemDetailScreen = ({ navigation, route }) => {
               </View>
             </Card>
           </TouchableOpacity>
-          {attempts.length > 0 ? attempts.map(attempt => (
+          {attempts.length > 0 ? attempts.sort((a, b) => {
+            if (a.date < b.date) {
+              return 1;
+            } else if (a.date > b.date) {
+              return -1;
+            } else if (a._id < b._id) {
+              return 1;
+            } else {
+              return -1;
+            }
+          }).map(attempt => (
             <AttemptCard
+              attemptId = {attempt._id}
               attemptDate={attempt.date}
-              notes={attempt.notes}
-              isSend={attempt.isSend}
+              attemptNotes={attempt.notes}
+              attemptIsSend={attempt.isSend}
+              editAttempt={onEditAttempt}
               key={attempt._id}
             />
             )):

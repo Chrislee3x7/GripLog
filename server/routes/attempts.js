@@ -50,12 +50,10 @@ router.post('/', async (req, res) => {
   // console.log("got userId", userId)
   if (!userId) return res.status(400).send('User is invalid!');
 
-
   // then check problem Id
   const problemId = req.body.problem_id;
   const problem = await Problem.findById(problemId);
   if (!problem) return res.status(400).send('Problem is invalid!');
-
 
   // add a new attempt with problem_id
   const attempt = new Attempt({
@@ -70,16 +68,16 @@ router.post('/', async (req, res) => {
     return res.status(400).send('Attempt could not be created!');
   }
 
-  console.log("attempt.is_send", attempt.isSend);
+  // console.log("attempt.is_send", attempt.isSend);
   // need to update problem
-  const updateRes = await Problem.findByIdAndUpdate(problemId, { 
-    attemptCount: problem.attemptCount + 1, 
-    sendCount: attempt.isSend ? problem.sendCount + 1 : problem.sendCount,
-    dateCompleted: problem.dateCompleted == 0 && attempt.isSend ? attempt.date : problem.dateCompleted,
-    lastAttemptDate: attempt.date
-  }, {new: true});
+  // const updateRes = await Problem.findByIdAndUpdate(problemId, { 
+  //   attemptCount: problem.attemptCount + 1, 
+  //   sendCount: attempt.isSend ? problem.sendCount + 1 : problem.sendCount,
+  //   dateCompleted: problem.dateCompleted == 0 && attempt.isSend ? attempt.date : problem.dateCompleted,
+  //   lastAttemptDate: attempt.date
+  // }, {new: true});
 
-  console.log(updateRes)
+  // console.log(updateRes)
 
   res.status(201).json(createdAttempt);
 });
@@ -99,14 +97,27 @@ router.delete('/:id', async (req,res) => {
 });
 
 // edit attempt
-router.put('/:id', async (req, res) => {
+router.put('/', async (req, res) => {
+  console.log("got to attempt put")
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('Authorization').split(' ')[1];
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  // console.log("got userId", userId)
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  console.log("user id is valid");
+  console.log(req.body);
   // does not edit problemId as it should stay the same
   const attempt = await Attempt.findByIdAndUpdate(
-    req.params.id,
+    req.body.attempt_id,
     {
       date: req.body.date,
       notes: req.body.notes,
-      is_send: req.body.is_send
+      isSend: req.body.isSend
     },
     { new: true } // means that we want the new updated data to be returned
   );

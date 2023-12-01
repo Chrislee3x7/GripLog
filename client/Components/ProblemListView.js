@@ -24,12 +24,12 @@ const ProblemListView = ({ navigation }) => {
 
   const fetchProblems = async () => {
     const problems = await UserService.getProblems();
-    console.log(problems.data);
+    // console.log(problems.data);
     setProblems(problems.data);
   }
 
   const onProblemPress = (id, color, grade, name) => {
-    console.log(`Problem ${id} ${color} ${grade} ${name} pressed`);
+    // console.log(`Problem ${id} ${color} ${grade} ${name} pressed`);
     navigation.navigate("ProblemDetail", { id: id, color: color, grade: grade, name: name });
   }
 

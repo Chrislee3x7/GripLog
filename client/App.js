@@ -4,7 +4,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import GripLog from './Components/GripLog';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 const theme = {
   ...DefaultTheme,
@@ -19,7 +20,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <PaperProvider theme={theme}>
-        <GripLog/>  
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <GripLog/>  
+        </GestureHandlerRootView>
       </PaperProvider>
     </NavigationContainer>
   )
