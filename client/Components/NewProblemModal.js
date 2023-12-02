@@ -12,7 +12,7 @@ import { API_URL } from '@env';
 
 // import Camera from 'react-native-camera';
 
-const NewProblemModal = ({ visible, setVisible}) => {
+const NewProblemModal = ({ visible, closeModal }) => {
 
   const theme = useTheme();
   
@@ -185,7 +185,7 @@ const NewProblemModal = ({ visible, setVisible}) => {
                       maximumValue={17}
                       step={1}
                       tapToSeek={true}
-                      onValueChange={(pos) => {setGrade(pos); console.log(pos)}}
+                      onValueChange={(pos) => {setGrade(pos)}}
                     />
                   </View>
                 </Card>

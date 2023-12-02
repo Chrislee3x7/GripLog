@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Problem = require('../models/problem');
+const Attempt = require('../models/attempt');
 const User = require('../models/user');
 const multer = require('multer');
 const jwt = require('jsonwebtoken');
@@ -187,23 +188,35 @@ router.delete('/', async (req,res) => {
   if (!problem) {
     return res.status(404).json({success: false, message: 'Problem not be found!'}); 
   }
+  // also need to delete attempts associated with problem
+  await Attempt.deleteMany({ problem_id: req.body.problem_id });
+
   res.status(200).json({success: true, message: 'Problem was successfully deleted.'})
 });
 
 // edit a problem
-router.put('/:id', async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
+router.put('/', async (req, res) => {
+   // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('Authorization').split(' ')[1];
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  // console.log("got userId", userId)
+  if (!userId) return res.status(400).send('User is invalid!');
+  
+  if (!mongoose.isValidObjectId(req.body.problem_id)) {
     return res.status(400).send('Problem ID is invalid!');
   }
 
   const problem = await Problem.findByIdAndUpdate(
-    req.params.id,
+    req.body.problem_id,
     {
       name: req.body.name,
       grade: req.body.grade,
       color: req.body.color,
-      location: req.body.location,
-      dateCompleted: req.body.dateCompleted
+      // location: req.body.location, TODO!!!!!
     },
     { new: true } // means that we want the new updated data to be returned
   );

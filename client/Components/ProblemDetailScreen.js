@@ -3,6 +3,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
 import AttemptCard from "./AttemptCard";
+import EditNameModal from './EditNameModal';
+import EditColorModal from './EditColorModal'
+import EditGradeModal from './EditGradeModal'
 import UserService from '../services/user.service';
 
 
@@ -10,23 +13,18 @@ const ProblemDetailScreen = ({ navigation, route }) => {
 
   const theme = useTheme();
 
-  const { id, color, grade, name } = route.params;
-  
+  const id = route.params.id;
+  const [name, setName] = useState(route.params.name);
+  const [color, setColor] = useState(route.params.color);
+  const [grade, setGrade] = useState(route.params.grade);
   const [attempts, setAttempts] = useState([])
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     // console.log(id, color, grade, name)
-  //     console.log("fetching attempts...");
-  //     fetchAttempts();
-  //     // Make request to get problem attempts
-
-  //     return;
-  //   }, [])
-  // );
+  
+  const [editNameModalOpen, setEditNameModalOpen] = React.useState(false);
+  const [editColorModalOpen, setEditColorModalOpen] = useState(false);
+  const [editGradeModalOpen, setEditGradeModalOpen] = useState(false);
 
   useEffect(() => {
-    console.log("fetching attempts...");
+    // console.log("fetching attempts...");
     fetchAttempts();
     
     return;
@@ -57,12 +55,29 @@ const ProblemDetailScreen = ({ navigation, route }) => {
     fetchAttempts();
   }
 
+  const onEditProblem = async (newColor, newGrade, newName) => {
+    setColor(newColor);
+    setGrade(newGrade);
+    setName(newName);
+
+    await UserService.editProblem(id, newColor, newGrade, newName);
+  }
+ 
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>
       <View className="flex-row items-center">
         <IconButton icon="chevron-left" className="" size={32} onPress={() => navigation.goBack()}/>
-        <View backgroundColor={color} className="w-6 h-6 rounded-full"/>
-        <Text className="ml-4 w-60" numberOfLines={1} ellipsizeMode="tail" variant="headlineSmall">V{grade} - {name}</Text>
+        <TouchableOpacity onPress={() => setEditColorModalOpen(true)}>
+          <View backgroundColor={color} className="w-6 h-6 rounded-full"/>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setEditGradeModalOpen(true)}>
+          <View className="rounded-md mx-2 bg-slate-300 px-2 py-1">
+            <Text variant="headlineSmall">V{grade}</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setEditNameModalOpen(true)}>
+          <Text className="w-52" numberOfLines={1} ellipsizeMode="tail" variant="headlineSmall">{name}</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator="false">
         <View className="flex-col overflow-auto mt-2">
@@ -90,7 +105,7 @@ const ProblemDetailScreen = ({ navigation, route }) => {
             }
           }).map(attempt => (
             <AttemptCard
-              attemptId = {attempt._id}
+              attemptId={attempt._id}
               attemptDate={attempt.date}
               attemptNotes={attempt.notes}
               attemptIsSend={attempt.isSend}
@@ -105,7 +120,24 @@ const ProblemDetailScreen = ({ navigation, route }) => {
           }
         </View>
       </ScrollView>
-      {/* <NewAttemptModal visible={newAttemptModalIsVisible} setVisible={setNewAttemptModalIsVisible}/> */}
+      <EditColorModal
+        visible={editColorModalOpen}
+        closeModal={() => {setEditColorModalOpen(false)}}
+        color={color}
+        setColor={(newColor) => onEditProblem(newColor, grade, name)}
+      />
+      <EditGradeModal
+        visible={editGradeModalOpen}
+        closeModal={() => {setEditGradeModalOpen(false)}}
+        grade={grade}
+        setGrade={(newGrade) => onEditProblem(color, newGrade, name)}
+      />
+      <EditNameModal
+        visible={editNameModalOpen}
+        closeModal={() => {setEditNameModalOpen(false)}}
+        name={name}
+        setName={(newName) => onEditProblem(color, grade, newName)}
+      />
     </View>
   );
 }

@@ -4,7 +4,7 @@ import { BaseButton, RectButton, Swipeable } from 'react-native-gesture-handler'
 import Animated from 'react-native-reanimated';
 import { useRef } from 'react';
 
-const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress, deleteProblem }) => {
+const ProblemCard = ({ id, color, grade, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress, deleteProblem }) => {
   const date = new Date(lastAttemptDate);
   const nullDate = new Date("9000-01-01");
   const dateString = date.valueOf() == nullDate.valueOf() ? "N/A" : date.toLocaleDateString();
@@ -12,8 +12,8 @@ const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount
   // gesture stuff (nice things)
 
   const onDeletePressed = () => {
-    Alert.alert(`Delete "${name}"`, 
-      "All associated data with this problem will be deleted. You cannot undo this action.", 
+    Alert.alert(`Delete problem ${name}`, 
+      "All associated data with this problem will be deleted. You cannot undo this!", 
       [
         {
           text: 'Cancel',
@@ -49,7 +49,7 @@ const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount
   return (
     <View className="pb-2">
       <Swipeable ref={swipeableRef} renderRightActions={renderRightActions}>
-        <TouchableOpacity className="" activeOpacity={0.7}  onPress={() => onPress(id, color, name, grade)}>
+        <TouchableOpacity className="" activeOpacity={0.7}  onPress={() => onPress(id, color, grade, name)}>
           <Card mode="contained" >
             <View className="flex-row content-start">
               <View className="flex w-1/5">

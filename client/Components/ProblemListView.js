@@ -34,7 +34,6 @@ const ProblemListView = ({ navigation }) => {
   }
 
   const onProblemPress = (id, color, grade, name) => {
-    // console.log(`Problem ${id} ${color} ${grade} ${name} pressed`);
     navigation.navigate("ProblemDetail", { id: id, color: color, grade: grade, name: name });
   }
 
@@ -46,14 +45,14 @@ const ProblemListView = ({ navigation }) => {
           {problems.length > 0 ? problems.map(problem => (
             <ProblemCard
               id={problem._id}
-              grade={problem.grade}
               color={problem.color}
+              grade={problem.grade}
               name={problem.name}
               imageUri="https://wallpapers.com/images/hd/vertical-sunset-shade-mountain-i3d1yb2udkq9rn59.jpg"
               sendCount={problem.sendCount ? problem.sendCount : 0}
               attemptCount={problem.attemptCount ? problem.attemptCount : 0}
               lastAttemptDate={problem.lastAttemptDate ? problem.lastAttemptDate : 0}
-              onPress={(id, color, grade, name) => onProblemPress(id, color, grade, name)}
+              onPress={onProblemPress}
               deleteProblem={deleteProblem}
               key={problem._id}
               />

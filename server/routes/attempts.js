@@ -108,7 +108,6 @@ router.delete('/', async (req,res) => {
 
 // edit attempt
 router.put('/', async (req, res) => {
-  console.log("got to attempt put")
   // check user_Id first
   // get token 'x-access-token' from header
   const token = req.get('Authorization').split(' ')[1];
@@ -119,8 +118,6 @@ router.put('/', async (req, res) => {
   // console.log("got userId", userId)
   if (!userId) return res.status(400).send('User is invalid!');
 
-  console.log("user id is valid");
-  console.log(req.body);
   // does not edit problemId as it should stay the same
   const attempt = await Attempt.findByIdAndUpdate(
     req.body.attempt_id,

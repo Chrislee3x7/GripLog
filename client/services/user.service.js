@@ -31,6 +31,16 @@ class UserService {
     }, { headers: auth });
   }
 
+  async editProblem(problemId, color, grade, name) {
+    const auth = await authHeader();
+    return axios.put(`${API_URL}/problems`, {
+      problem_id: problemId,
+      color: color,
+      grade: grade,
+      name: name
+    }, { headers: auth });
+  }
+
   async createAttempt(problemId, date, notes, isSend) {
     // console.log("got to user.service");
     const auth = await authHeader();
