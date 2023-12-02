@@ -178,13 +178,10 @@ router.delete('/', async (req,res) => {
   const userId = await User.findById(decoded.userId).select('_id');
   if (!userId) return res.status(400).send('User is invalid!');
 
-  console.log(req);
   // check if problem id is valid
   if (!mongoose.isValidObjectId(req.body.problem_id)) {
     return res.status(400).send('Problem ID is invalid!');
   }
-  console.log("problem id is valid")
-
 
   const problem = await Problem.findByIdAndDelete(req.body.problem_id);
   if (!problem) {

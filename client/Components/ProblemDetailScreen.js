@@ -52,6 +52,11 @@ const ProblemDetailScreen = ({ navigation, route }) => {
     fetchAttempts();
   }
 
+  const onDeleteAttempt = async (attemptId) => {
+    await UserService.deleteAttempt(attemptId);
+    fetchAttempts();
+  }
+
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>
       <View className="flex-row items-center">
@@ -90,6 +95,7 @@ const ProblemDetailScreen = ({ navigation, route }) => {
               attemptNotes={attempt.notes}
               attemptIsSend={attempt.isSend}
               editAttempt={onEditAttempt}
+              deleteAttempt={onDeleteAttempt}
               key={attempt._id}
             />
             )):

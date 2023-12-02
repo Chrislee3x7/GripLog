@@ -83,12 +83,22 @@ router.post('/', async (req, res) => {
 });
 
 // delete attempt
-router.delete('/:id', async (req,res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
+router.delete('/', async (req,res) => {
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('Authorization').split(' ')[1];
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  // check if problem id is valid
+  if (!mongoose.isValidObjectId(req.body.attempt_id)) {
     return res.status(400).send('Attempt ID is invalid!');
   }
 
-  const attempt = await Attempt.findByIdAndDelete(req.params.id);
+  const attempt = await Attempt.findByIdAndDelete(req.body.attempt_id);
   if (!attempt) {
     return res.status(404).json({success: false, message: 'Attempt not be found!'}); 
   }

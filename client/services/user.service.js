@@ -53,6 +53,16 @@ class UserService {
     }, { headers: auth });
   }
 
+  async deleteAttempt(id) {
+    const auth = await authHeader();
+    return axios.delete(`${API_URL}/attempts`, {
+      data: {
+        attempt_id: id
+      },
+      headers: auth,
+    });
+  }
+
   async deleteProblem(id) {
     const auth = await authHeader();
     return axios.delete(`${API_URL}/problems`, {
