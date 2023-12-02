@@ -52,6 +52,16 @@ class UserService {
       location: location
     }, { headers: auth });
   }
+
+  async deleteProblem(id) {
+    const auth = await authHeader();
+    return axios.delete(`${API_URL}/problems`, {
+      data: {
+        problem_id: id
+      },
+      headers: auth,
+    });
+  }
 }
 
 export default new UserService();

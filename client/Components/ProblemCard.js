@@ -4,26 +4,25 @@ import { BaseButton, RectButton, Swipeable } from 'react-native-gesture-handler'
 import Animated from 'react-native-reanimated';
 import { useRef } from 'react';
 
-const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress }) => {
+const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress, deleteProblem }) => {
   const date = new Date(lastAttemptDate);
   const nullDate = new Date("9000-01-01");
-  // console.log(date, nullDate);
   const dateString = date.valueOf() == nullDate.valueOf() ? "N/A" : date.toLocaleDateString();
 
   // gesture stuff (nice things)
 
-  const alertDelete = () => {
+  const onDeletePressed = () => {
     Alert.alert(`Delete "${name}"`, 
       "All associated data with this problem will be deleted. You cannot undo this action.", 
       [
         {
           text: 'Cancel',
-          // onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
+          onPress: () => swipeableRef.current.close()
         },
         {
           text: 'Delete', 
-          onPress: () => console.log(`Delete problem ${name}`),
+          onPress: () => { deleteProblem(id); swipeableRef.current.close(); },
           style: 'destructive'
         },
       ]);
@@ -34,16 +33,11 @@ const ProblemCard = ({ id, grade, color, name, imageUri, sendCount, attemptCount
 
   const renderRightActions = (progress, dragX) => {
 
-    const onDeletePressed = () => {
-      alertDelete(); 
-      swipeableRef.current.close()
-    }
-
     return (
       <TouchableOpacity className="rounded-lg ml-2" activeOpacity={0.7}>
         <Button className="rounded-lg items-center" variant="contained" 
           buttonColor="#ef4444" 
-          onPress={() => {onDeletePressed}}>
+          onPress={() => onDeletePressed()}>
           <View className="justify-center items-center grow">
             <Text>Delete</Text>
           </View>

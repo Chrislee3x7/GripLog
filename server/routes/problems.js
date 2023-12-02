@@ -123,7 +123,6 @@ router.get('/:id', async (req, res) => {
 // create a new problem
 router.post('/', uploadOptions.array('images', 5), async (req, res) => {
   // check user_Id first
-  // check user_Id first
   // get token 'x-access-token' from header
   const token = req.get('Authorization').split(' ')[1];
   // decode jwt
@@ -169,12 +168,25 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
 });
 
 // delete a problem
-router.delete('/:id', async (req,res) => {
-  if (!mongoose.isValidObjectId(req.params.id)) {
+router.delete('/', async (req,res) => {
+  // check user_Id first
+  // get token 'x-access-token' from header
+  const token = req.get('Authorization').split(' ')[1];
+  // decode jwt
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  // get the user from the userId from the decoded jwt
+  const userId = await User.findById(decoded.userId).select('_id');
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  console.log(req);
+  // check if problem id is valid
+  if (!mongoose.isValidObjectId(req.body.problem_id)) {
     return res.status(400).send('Problem ID is invalid!');
   }
+  console.log("problem id is valid")
 
-  const problem = await Problem.findByIdAndDelete(req.params.id);
+
+  const problem = await Problem.findByIdAndDelete(req.body.problem_id);
   if (!problem) {
     return res.status(404).json({success: false, message: 'Problem not be found!'}); 
   }

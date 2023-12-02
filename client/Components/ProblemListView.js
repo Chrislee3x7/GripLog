@@ -28,6 +28,11 @@ const ProblemListView = ({ navigation }) => {
     setProblems(problems.data);
   }
 
+  const deleteProblem = async (id) => {
+    await UserService.deleteProblem(id);
+    fetchProblems(); // alternatively manually modify client side
+  }
+
   const onProblemPress = (id, color, grade, name) => {
     // console.log(`Problem ${id} ${color} ${grade} ${name} pressed`);
     navigation.navigate("ProblemDetail", { id: id, color: color, grade: grade, name: name });
@@ -48,8 +53,9 @@ const ProblemListView = ({ navigation }) => {
               sendCount={problem.sendCount ? problem.sendCount : 0}
               attemptCount={problem.attemptCount ? problem.attemptCount : 0}
               lastAttemptDate={problem.lastAttemptDate ? problem.lastAttemptDate : 0}
-              key={problem._id}
               onPress={(id, color, grade, name) => onProblemPress(id, color, grade, name)}
+              deleteProblem={deleteProblem}
+              key={problem._id}
               />
             )):
             <View>
