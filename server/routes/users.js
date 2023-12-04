@@ -24,27 +24,6 @@ router.get('/:id', async (req, res) => {
     return res.status(500).json({message: 'User with the given ID was not found!'});
   }
   res.status(200).send(user);
-})
-
-// Create new user
-router.post('/', async (req, res) => {
-  console.log("got to post request!!");
-  // add a new user
-  const user = new User({
-    username: req.body.username,
-    name: req.body.name,
-    email: req.body.email,
-    passwordHash: bcrypt.hashSync(req.body.password, 10)
-  });
-  
-  // TODO: field checking
-  // make sure email is unique
-  // valid name, etc
-  const createdUser = await user.save();
-  if (!createdUser) {
-    res.status(400).json('User could not be created!');
-  }
-  res.status(201).json(createdUser);
 });
 
 // delete User
@@ -95,7 +74,6 @@ router.post('/login', async (req, res) => {
 
 // User register route
 router.post('/register', async (req, res) => {
-  console.log("in reg")
   // Try to find user with email, if exists, then cannot create with this email
   // usernames can have duplicates, emails must be unique
   const user = await User.findOne({email: req.body.email}); 
@@ -117,6 +95,7 @@ router.post('/register', async (req, res) => {
   if (!newUser) {
     return res.status(401).json('User could not be created!');
   }
+  
   res.status(201).json(newUser);
 });
 

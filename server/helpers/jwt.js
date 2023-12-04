@@ -6,6 +6,7 @@ require('dotenv/config');
 
 const secret = process.env.ACCESS_TOKEN_SECRET;
 const api = process.env.API_URL;
+
 const authJwt = jwt({
   secret,
   algorithms: ['HS256']

@@ -20,6 +20,11 @@ class UserService {
     });
   }
 
+  async getLocations() {
+    const auth = await authHeader();
+    return axios.get(`${API_URL}/locations`, { headers: auth })
+  }
+
   async editAttempt(attemptId, date, notes, isSend) {
     // console.log("got to user.service");
     const auth = await authHeader();

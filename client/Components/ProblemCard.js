@@ -4,7 +4,7 @@ import { BaseButton, RectButton, Swipeable } from 'react-native-gesture-handler'
 import Animated from 'react-native-reanimated';
 import { useRef } from 'react';
 
-const ProblemCard = ({ id, color, grade, name, imageUri, sendCount, attemptCount, lastAttemptDate, onPress, deleteProblem }) => {
+const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, attemptCount, lastAttemptDate, onPress, deleteProblem }) => {
   const date = new Date(lastAttemptDate);
   const nullDate = new Date("9000-01-01");
   const dateString = date.valueOf() == nullDate.valueOf() ? "N/A" : date.toLocaleDateString();
@@ -59,16 +59,18 @@ const ProblemCard = ({ id, color, grade, name, imageUri, sendCount, attemptCount
                     uri: imageUri
                   }}/>
               </View>
-              <View className="flex-col grow pt-1 px-2 pb-2 w-2/3">
+              <View className="flex-col grow mt-2 mx-2 mb-2 w-2/3">
                 <View className="flex-row gap-x-2 items-center">
                   <View 
                     className="w-4 h-4 rounded-full"
                     backgroundColor={color} />
                   <Text numberOfLines={1} ellipsizeMode="tail" variant="titleMedium" 
-                    className="my-1 truncate whitespace-nowrap w-56">V{grade} - {name}</Text>
-                  {/* <Text variant="titleMedium" className="my-1 truncate">fjlksadjfldksajfldsajfldska fdlsak jfalsd fsad jfasd j;fdsaf;safds</Text> */}
+                    className="truncate whitespace-nowrap w-56">V{grade} - {name}</Text>
                 </View>
-                <View className="flex flex-row justify-between">
+                <View className="">
+                  <Text variant="bodySmall">{location != "" ? "@" + location : " "}</Text>
+                </View>
+                <View className="flex flex-row justify-between mt-1">
                   <Text variant="bodySmall" className="">{sendCount} Sends</Text>
                   <Text variant="bodySmall">Last attempted:</Text>
                 </View>

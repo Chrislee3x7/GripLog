@@ -53,9 +53,10 @@ router.get('/', async (req, res) => {
   if (!userId) return res.status(400).send('User is invalid!');
 
   // const castUserId = (userId) => mongoose.Types.ObjectId(userId);
-  const query = { user_id: new mongoose.Types.ObjectId(userId) }
   const problemOverviewList = await Problem.aggregate([{ 
-      $match: query
+      $match: { 
+        user_id: new mongoose.Types.ObjectId(userId) 
+      }
     },
     {
       $lookup: {

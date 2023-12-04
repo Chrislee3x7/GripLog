@@ -41,19 +41,31 @@ const NewProblemModal = ({ visible, closeModal }) => {
       setKeyboardStatus('Keyboard Hidden');
     })
 
-    // get locations and set them
-    const testLocs = [
-      {key:'1', value:'Purdue Corec'},
-      {key:'2', value:'Santa Clara Movement'},
-    ];
+    fetchLocations()
+    // const testLocs = [
+    //   {key:'1', value:'Purdue Corec'},
+    //   {key:'2', value:'Santa Clara Movement'},
+    // ];
     
-    setLocationList(testLocs);
+    // setLocationList(testLocs);
 
     return () => {
       showKeyboard.remove();
       hideKeyboard.remove();
     }
   }, []);
+
+  const fetchLocations = async () => {
+    const res = await UserService.getLocations();
+    if (!res || !res.data) {
+      setLocationList([]);
+      return
+    }
+    const fetchedLocations = res.data;
+    const dropdownLocs = fetchedLocations.map((loc, index) => { return {key: index, value: loc.name} })
+    // console.log(dropdownLocs);
+    setLocationList(dropdownLocs);
+  }
 
   const clearFields = () => {
     setColor("");
@@ -67,7 +79,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
   }
  
   const onCancelPress = () => {
-    setVisible(false);
+    closeModal();
     clearFields();
   }
 
@@ -87,12 +99,9 @@ const NewProblemModal = ({ visible, closeModal }) => {
     } else {
       setGradeError('');
     }
-    if (!location) {
-      isValid = false; 
-      setLocationError('Please choose a location!');
-    } else {
-      setLocationError('');
-    }
+    // location is optional
+    // if (!location) {
+    // }
   
     // if anything is invalid, do not make request, simply return
     if (!isValid) return; 
@@ -100,9 +109,8 @@ const NewProblemModal = ({ visible, closeModal }) => {
     // send data to server
 
     const res = await UserService.createProblem(color, grade, name, location);
-    setVisible(false);
+    closeModal();
     clearFields();
-
   }
 
   return (

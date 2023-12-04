@@ -34,6 +34,7 @@ app.use('/public/uploads', express.static(__dirname + '/public/uploads')); // St
 const problemsRoutes = require('./routes/problems');
 const usersRoutes = require('./routes/users');
 const attemptsRoutes = require('./routes/attempts');
+const locationsRoutes = require('./routes/locations');
 const { application } = require('express');
 
 const api = process.env.API_URL;
@@ -41,6 +42,7 @@ const api = process.env.API_URL;
 app.use(`${api}/problems`, problemsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/attempts`, attemptsRoutes);
+app.use(`${api}/locations`, locationsRoutes);
 
 
 // connect to database before starting server

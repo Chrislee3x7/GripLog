@@ -48,6 +48,7 @@ const ProblemListView = ({ navigation }) => {
               color={problem.color}
               grade={problem.grade}
               name={problem.name}
+              location={problem.location}
               imageUri="https://wallpapers.com/images/hd/vertical-sunset-shade-mountain-i3d1yb2udkq9rn59.jpg"
               sendCount={problem.sendCount ? problem.sendCount : 0}
               attemptCount={problem.attemptCount ? problem.attemptCount : 0}
@@ -64,7 +65,7 @@ const ProblemListView = ({ navigation }) => {
         </View>
       </ScrollView>
       <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
-      <NewProblemModal visible={newProblemModalIsVisible} setVisible={setNewProblemModalIsVisible}/>
+      <NewProblemModal visible={newProblemModalIsVisible} closeModal={() => setNewProblemModalIsVisible(false)}/>
     </View>
   )
 }
