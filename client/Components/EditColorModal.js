@@ -1,4 +1,3 @@
-import Slider from "@react-native-community/slider";
 import { useState } from "react"
 import { View, ScrollView } from "react-native"
 import { Button, Modal, Portal, Text, TextInput, ToggleButton } from "react-native-paper"
@@ -32,7 +31,7 @@ const EditColorModal = ({ visible, closeModal, color, setColor }) => {
               </View>
             </ScrollView>
             <View className="flex-row gap-x-2 mt-2">
-              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => closeModal()}>Cancel</Button>
+              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => {setNewColor(color); closeModal()}}>Cancel</Button>
               <Button mode="contained" className="shrink w-1/2" onPress={() => {setColor(newColor); closeModal()}}>Confirm</Button>
             </View>
           </View>

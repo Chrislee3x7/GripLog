@@ -20,7 +20,7 @@ const EditNameModal = ({ visible, closeModal, name, setName }) => {
               onChangeText={newName => setNewName(newName)}
             />
             <View className="flex-row gap-x-2 mt-2">
-              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => closeModal()}>Cancel</Button>
+              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => {setNewName(name); closeModal()}}>Cancel</Button>
               <Button mode="contained" className="shrink w-1/2" onPress={() => {setName(newName); closeModal()}}>Confirm</Button>
             </View>
           </View>

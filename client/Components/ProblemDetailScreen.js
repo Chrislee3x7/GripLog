@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity } from "react-native";
+import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity, Alert } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
 import AttemptCard from "./AttemptCard";
 import EditNameModal from './EditNameModal';
@@ -19,7 +19,7 @@ const ProblemDetailScreen = ({ navigation, route }) => {
   const [grade, setGrade] = useState(route.params.grade);
   const [attempts, setAttempts] = useState([])
   
-  const [editNameModalOpen, setEditNameModalOpen] = React.useState(false);
+  const [editNameModalOpen, setEditNameModalOpen] = useState(false);
   const [editColorModalOpen, setEditColorModalOpen] = useState(false);
   const [editGradeModalOpen, setEditGradeModalOpen] = useState(false);
 
@@ -50,9 +50,26 @@ const ProblemDetailScreen = ({ navigation, route }) => {
     fetchAttempts();
   }
 
-  const onDeleteAttempt = async (attemptId) => {
-    await UserService.deleteAttempt(attemptId);
-    fetchAttempts();
+  const onDeleteAttempt = (attemptId) => {
+    Alert.alert(`Delete attempt`, 
+      "All associated data with this attempt will be deleted. You cannot undo this!", 
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => swipeableRef.current.close()
+        },
+        {
+          text: 'Delete', 
+          onPress: async () => { 
+            await UserService.deleteAttempt(attemptId);
+            fetchAttempts();
+          },
+          style: 'destructive'
+        },
+      ]);
+    
+    
   }
 
   const onEditProblem = async (newColor, newGrade, newName) => {

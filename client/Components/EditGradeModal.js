@@ -32,7 +32,7 @@ const EditGradeModal = ({ visible, closeModal, grade, setGrade }) => {
               />
             </View>
             <View className="flex-row gap-x-2 mt-2">
-              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => closeModal()}>Cancel</Button>
+              <Button mode="contained-tonal" className="shrink w-1/2" onPress={() => {setNewGrade(grade); closeModal()}}>Cancel</Button>
               <Button mode="contained" className="shrink w-1/2" onPress={() => {setGrade(newGrade); closeModal()}}>Confirm</Button>
             </View>
           </View>

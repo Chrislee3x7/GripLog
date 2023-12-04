@@ -8,6 +8,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import UserService from '../services/user.service';
 import axios from 'axios';
 import { API_URL } from '@env';
+import NewLocationModal from './NewLocationModal';
 
 
 // import Camera from 'react-native-camera';
@@ -29,6 +30,8 @@ const NewProblemModal = ({ visible, closeModal }) => {
   const [locationError, setLocationError] = useState("");
   
   const [locationList, setLocationList] = useState([]);
+
+  const [createLocationModalOpen, setCreateLocationModalOpen] = useState(false);
 
   const [keyboardStatus, setKeyboardStatus] = useState("");
 
@@ -75,7 +78,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
   }
 
   const onAddLocationPress = () => {
-
+    setCreateLocationModalOpen(true)
   }
  
   const onCancelPress = () => {
@@ -83,6 +86,10 @@ const NewProblemModal = ({ visible, closeModal }) => {
     clearFields();
   }
 
+  const onCreateLocation = async (newLocName) => {
+    await UserService.createLocation(newLocName)
+    fetchLocations()
+  }
 
   const onCreatePress = async () => {
     // do error check
@@ -232,7 +239,13 @@ const NewProblemModal = ({ visible, closeModal }) => {
                   <Button mode="contained" className="shrink w-1/2" onPress={() => onCreatePress()}>Create</Button>
                 </View>
               </View>
-            </ScrollView>
+            </ScrollView> 
+            <NewLocationModal 
+              visible={createLocationModalOpen}
+              closeModal={() => setCreateLocationModalOpen(false)}
+              // locationName=""
+              createLocation={onCreateLocation}
+            />
           </View>
         </Modal>
       </Portal>

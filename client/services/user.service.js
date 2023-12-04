@@ -57,6 +57,13 @@ class UserService {
     }, { headers: auth });
   }
 
+  async createLocation(locationName) {
+    const auth = await authHeader();
+    return axios.post(`${API_URL}/locations`, {
+      name: locationName
+    }, { headers: auth })
+  }
+
   async createProblem(color, grade, name, location) {
     // console.log("got to create problem");
     const auth = await authHeader();
