@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity, Alert } from "react-native";
+import { SafeAreaViewBase, ScrollView, View, Divider, TouchableOpacity, Alert, Image } from "react-native";
 import { Text, useTheme, Card, IconButton, Icon } from "react-native-paper";
 import AttemptCard from "./AttemptCard";
 import EditNameModal from './EditNameModal';
@@ -57,7 +57,7 @@ const ProblemDetailScreen = ({ navigation, route }) => {
         {
           text: 'Cancel',
           style: 'cancel',
-          onPress: () => swipeableRef.current.close()
+          onPress: () => {}
         },
         {
           text: 'Delete', 
@@ -98,7 +98,34 @@ const ProblemDetailScreen = ({ navigation, route }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator="false">
         <View className="flex-col overflow-auto mt-2">
-          {/* image gallery here */}
+          <ScrollView showsHorizontalScrollIndicator="false" horizontal className="mb-2">
+            <View className="flex flex-row w-max shrink gap-x-2">
+              <Image
+                className="rounded-lg w-48 h-72"
+                resizeMode="cover"
+                source={{
+                  uri: 'https://wallpapers.com/images/hd/vertical-sunset-shade-mountain-i3d1yb2udkq9rn59.jpg'
+                }}/>
+              <Image
+                className="rounded-lg w-48 h-72"
+                resizeMode="cover"
+                source={{
+                  uri: 'https://i.pinimg.com/736x/c8/7d/5c/c87d5c06b2eca33d662f289d61b7f01d.jpg'
+                }}/>
+              <Image
+                className="rounded-lg w-48 h-72"
+                resizeMode="cover"
+                source={{
+                  uri: 'https://wallpapershome.com/images/pages/pic_v/16241.jpg'
+                }}/>
+              <Image
+                className="rounded-lg w-48 h-72"
+                resizeMode="cover"
+                source={{
+                  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZy3elTi_98zFXaf9OZLWkXsHpZPnqtLQsjw&usqp=CAU'
+                }}/>
+            </View>
+          </ScrollView>
           <TouchableOpacity onPress={() => onNewAttemptPress()} activeOpacity={0.5}>
             <Card mode="" className="mb-2 border-blue-500 border-2 border-dashed">
               <View className="flex-row grow p-2">

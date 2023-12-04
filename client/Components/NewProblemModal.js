@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Modal, IconButton, Portal, Text, Icon, Card, ToggleButton, TextInput, Button } from 'react-native-paper';
+import { Modal, IconButton, Portal, Text, Icon, Card, ToggleButton, TextInput, Button, HelperText } from 'react-native-paper';
 import { View, Image, ScrollView, Keyboard, TouchableOpacity } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
@@ -27,6 +27,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
   
   const [colorError, setColorError] = useState("");
   const [gradeError, setGradeError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [locationError, setLocationError] = useState("");
   
   const [locationList, setLocationList] = useState([]);
@@ -74,7 +75,9 @@ const NewProblemModal = ({ visible, closeModal }) => {
     setColor("");
     setGrade(0);
     setName("");
-    setLocation("")
+    setLocation("");
+    setColorError("");
+    setGradeError(0);
   }
 
   const onAddLocationPress = () => {
@@ -100,11 +103,11 @@ const NewProblemModal = ({ visible, closeModal }) => {
     } else {
       setColorError('');
     }
-    if (!grade) {
+    if (name == "") {
       isValid = false;
-      setGradeError('Please choose a grade!')
+      setNameError('Please give your problem a name!')
     } else {
-      setGradeError('');
+      setNameError('');
     }
     // location is optional
     // if (!location) {
@@ -128,8 +131,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
             <View className="flex-row w-full">
               <Text className="my-6 ml-6 grow self-end" variant="headlineMedium">Create Problem</Text>
               <IconButton icon="close" size={28} className=" shrink self-start mt-4 mr-4" onPress={() => onCancelPress()}/>
-            </View>
-            
+            </View>  
             <ScrollView 
               className=""
               showsVerticalScrollIndicator="false" 
@@ -175,16 +177,16 @@ const NewProblemModal = ({ visible, closeModal }) => {
                   <Text variant="titleMedium" className="mx-4 mt-2">Color</Text>
                   <ScrollView showsHorizontalScrollIndicator="false" horizontal className="">
                     <View className="flex-row gap-x-2 mt-2 mb-4 mx-2">
-                      <ToggleButton icon={color == "#c4342d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => setColor("#c4342d")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#f67200" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => setColor("#f67200")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#f8e115" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => setColor("#f8e115")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#7bb35d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => setColor("#7bb35d")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#69abce" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => setColor("#69abce")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#7c609c" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => setColor("#7c609c")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#ffbdc4" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => setColor("#ffbdc4")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#644117" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => setColor("#644117")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#141414" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => setColor("#141414")} className="w-10 h-10 border-blue-500 rounded-full"/>
-                      <ToggleButton icon={color == "#fcfdf5" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => setColor("#fcfdf5")} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#c4342d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#c4342d" onPress={() => {setColor("#c4342d"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#f67200" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f67200" onPress={() => {setColor("#f67200"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#f8e115" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#f8e115" onPress={() => {setColor("#f8e115"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#7bb35d" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7bb35d" onPress={() => {setColor("#7bb35d"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#69abce" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#69abce" onPress={() => {setColor("#69abce"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#7c609c" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#7c609c" onPress={() => {setColor("#7c609c"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#ffbdc4" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#ffbdc4" onPress={() => {setColor("#ffbdc4"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#644117" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#644117" onPress={() => {setColor("#644117"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#141414" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#141414" onPress={() => {setColor("#141414"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
+                      <ToggleButton icon={color == "#fcfdf5" ? selectedIconName : ""} iconColor={selectedIconColor} backgroundColor="#fcfdf5" onPress={() => {setColor("#fcfdf5"); setColorError('')}} className="w-10 h-10 border-blue-500 rounded-full"/>
                     </View>
                   </ScrollView>
                 </Card>
@@ -200,9 +202,14 @@ const NewProblemModal = ({ visible, closeModal }) => {
                       maximumValue={17}
                       step={1}
                       tapToSeek={true}
-                      onValueChange={(pos) => {setGrade(pos)}}
+                      onValueChange={(pos) => {setGrade(pos); setGradeError('')}}
                     />
                   </View>
+                  {gradeError != '' ? (
+                    <HelperText className="mx-2 mb-2" type="error">
+                      {gradeError}
+                    </HelperText>) : null
+                  }
                 </Card>
                 <Card mode="contained">
                   <Text variant="titleMedium" className="mx-4 mt-2">Name</Text>
@@ -212,6 +219,11 @@ const NewProblemModal = ({ visible, closeModal }) => {
                     mode={'outlined'}
                     label='Problem Name'
                   />
+                  {nameError != '' ? (
+                    <HelperText className="mx-2 mb-2" type="error">
+                      {nameError}
+                    </HelperText>
+                    ) : null}
                 </Card>
                 <Card mode="contained">
                   <Text variant="titleMedium" className="mx-4 mt-2">Location</Text>

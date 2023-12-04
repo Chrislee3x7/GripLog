@@ -65,7 +65,7 @@ const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, at
                     className="w-4 h-4 rounded-full"
                     backgroundColor={color} />
                   <Text numberOfLines={1} ellipsizeMode="tail" variant="titleMedium" 
-                    className="truncate whitespace-nowrap w-56">V{grade} - {name}</Text>
+                    className="truncate whitespace-nowrap w-56">V{grade} {name != "" ? "- " + name : ""}</Text>
                 </View>
                 <View className="">
                   <Text variant="bodySmall">{location != "" ? "@" + location : " "}</Text>
