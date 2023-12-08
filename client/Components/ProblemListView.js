@@ -64,7 +64,7 @@ const ProblemListView = ({ navigation }) => {
           }
         </View>
       </ScrollView>
-      <FAB className="absolute bottom-4 right-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
+      <FAB className="absolute bottom-4 right-0" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
       <NewProblemModal visible={newProblemModalIsVisible} closeModal={() => setNewProblemModalIsVisible(false)}/>
     </View>
   )

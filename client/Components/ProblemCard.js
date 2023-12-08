@@ -12,7 +12,7 @@ const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, at
   // gesture stuff (nice things)
 
   const onDeletePressed = () => {
-    Alert.alert(`Delete problem ${name}`, 
+    Alert.alert(`Delete Problem`, 
       "All associated data with this problem will be deleted. You cannot undo this!", 
       [
         {
@@ -59,7 +59,7 @@ const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, at
                     uri: imageUri
                   }}/>
               </View>
-              <View className="flex-col grow mt-2 mx-2 mb-2 w-2/3">
+              <View className="flex-col grow mt-2 ml-1 mr-1 mb-2 w-2/3">
                 <View className="flex-row gap-x-2 items-center">
                   <View 
                     className="w-4 h-4 rounded-full"
@@ -67,14 +67,14 @@ const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, at
                   <Text numberOfLines={1} ellipsizeMode="tail" variant="titleMedium" 
                     className="truncate whitespace-nowrap w-56">V{grade} {name != "" ? "- " + name : ""}</Text>
                 </View>
-                <View className="">
-                  <Text variant="bodySmall">{location != "" ? "@" + location : " "}</Text>
+                <View className="ml-1">
+                  <Text variant="bodySmall">{location != "" ? "@" + location : "No Location"}</Text>
                 </View>
-                <View className="flex flex-row justify-between mt-1">
+                <View className="flex flex-row justify-between ml-1 mt-1">
                   <Text variant="bodySmall" className="">{sendCount} Sends</Text>
                   <Text variant="bodySmall">Last attempted:</Text>
                 </View>
-                <View className="flex-row justify-between">
+                <View className="flex-row justify-between ml-1">
                   <Text variant="bodySmall">{attemptCount} Attempts</Text>
                   <Text variant="bodySmall">{dateString}</Text>
                 </View>

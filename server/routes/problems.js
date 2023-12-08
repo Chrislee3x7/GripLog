@@ -107,6 +107,7 @@ router.get('/', async (req, res) => {
   ]).exec();
   // console.log(problemOverviewList, "problem agg above");
   // const problemList = await Problem.find(query).select('color grade name location');
+
   if (!problemOverviewList) {
     return res.status(500).json({success: false});
   }
@@ -159,6 +160,8 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
     location: req.body.location,
     dateCompleted: 0
   });
+
+  mongoose.connection.
 
   console.log("defined problem in server");
 
