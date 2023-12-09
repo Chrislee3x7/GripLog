@@ -238,7 +238,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
                         maxHeight={120}
                         placeholder="Select Option"
                         searchPlaceholder="Search"
-                        setSelected={(val) => {setLocation(val); console.log(val)}} 
+                        setSelected={(val) => {setLocation(val)}} 
                         data={locationList}
                         save="value"/>
                     </View>

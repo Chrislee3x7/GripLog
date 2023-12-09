@@ -39,6 +39,91 @@ var uploadOptions = multer({storage: storage});
 // Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
 
+router.get('/stats/completionRateByGrade', async (req, res) => {
+  // check user_Id first
+  const token = req.get('Authorization').split(' ')[1];
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const userId = await User.findById(decoded.userId).select('_id');
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  const completionRateByGrade = await Attempt.aggregate([
+    {
+      $match: {
+        user_id: new mongoose.Types.ObjectId(userId),
+      }
+    },
+    {
+      $lookup: {
+        from: "problems",
+        localField: "problem_id",
+        foreignField: "_id",
+        as: "problem"
+      }
+    },
+    {
+      $unwind: {
+        path: "$problem"
+      }
+    },
+    {
+      $group: {
+        _id: {
+          grade: "$problem.grade",
+          problem_id: "$problem_id"
+        },
+        // isComplete: {
+        //   $max: {
+        //     $cond: {
+        //       if: { $eq: ["$isSend", true] },
+        //       then: 1,
+        //       else: 0
+        //     }
+        //   }
+        // }
+        isComplete: {
+          $max: {
+            isSend: {
+              $cond: {
+                if: { $eq: ["$isSend", true] },
+                then: 1,
+                else: 0
+              }
+            },
+            // date: "$date",
+            // _id: "$_id",
+            // notes: "$notes"
+          }
+        },
+      }
+    },
+    {
+      $group: {
+        _id: "$_id.grade",
+        numComplete: { $sum: { $cond: { if: "$isComplete.isSend", then: 1, else: 0 } } },
+        numIncomplete: { $sum: { $cond: { if: "$isComplete.isSend", then: 0, else: 1 } }  }
+      },
+    },
+    {
+      $project: {
+        grade: "$_id",
+        numComplete: 1,
+        numIncomplete: 1,
+        completionRate: { $divide: ["$numComplete", { $add: ["$numComplete", "$numIncomplete"] }] },
+      }
+    },
+    {
+      $sort: {
+        grade: 1
+      }
+    }
+  ]);
+  console.log(JSON.stringify(completionRateByGrade, null, 4))
+
+  if (!completionRateByGrade) return res.status(500).json({success: false});
+  // console.log("success!");
+  res.status(200).send(completionRateByGrade);
+});
+
 router.get('/stats/averageAttemptCount', async (req, res) => {
   // check user_Id first
   const token = req.get('Authorization').split(' ')[1];
@@ -137,7 +222,6 @@ router.get('/stats/averageAttemptCount', async (req, res) => {
   ]).exec();
 
   if (!averageAttemptCount) return res.status(500).json({success: false});
-  
   // console.log("success!");
   res.status(200).send(averageAttemptCount[0]);
 });

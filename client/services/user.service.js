@@ -101,6 +101,12 @@ class UserService {
     return axios.get(`${API_URL}/problems/stats/averageAttemptCount`, 
     { headers: auth });
   }
+
+  async getCompletionRateByGrade(userId) {
+    const auth = await authHeader();
+    return axios.get(`${API_URL}/problems/stats/completionRateByGrade`, 
+    { headers: auth });
+  }
 }
 
 export default new UserService();
