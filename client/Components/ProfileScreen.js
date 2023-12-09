@@ -18,6 +18,8 @@ const ProfileScreen = ({ navigation }) => {
 
   const [completionRateByGradeData, setCompletionRateByGradeData] = useState([]);
 
+  const [barChartWidth, setBarChartWidth] = useState(0);
+
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -68,37 +70,51 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4">
-      <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Profile</Text>
+      <Text className="mt-6 pb-4 mx-4" variant="headlineLarge">Profile</Text>
       <ScrollView>
-        <View className="gap-y-2 mx-2 items-center">
-          <View className="flex-row">
-            <Text className="my-2" variant="titleMedium">Problems Attempted:</Text>
+        <View className="mx-2 items-center">
+          <View className="flex-row py-4">
+            <Text className="" variant="titleMedium">Problems Attempted:</Text>
             <View className="grow"/>
-            <Text className="my-2" variant="titleMedium">{problemCount}</Text>
+            <Text className="" variant="titleMedium">{problemCount}</Text>
           </View>
-          <Divider/>
-          <View className="flex-row">
-            <Text className="my-2" variant="titleMedium">Problems Sent:</Text>
+          <Divider bold className="w-full"/>
+          <View className="flex-row py-4">
+            <Text className="" variant="titleMedium">Problems Sent:</Text>
             <View className="grow"/>
-            <Text className="my-2" variant="titleMedium">{sentProblemCount}</Text>
+            <Text className="" variant="titleMedium">{sentProblemCount}</Text>
           </View>
-          <Divider/>
-          <View className="flex-row mb-4">
-            <Text className="my-2" variant="titleMedium">Average Attempts to Send:</Text>
+          <Divider bold className="w-full"/>
+          <View className="flex-row py-4">
+            <Text className="" variant="titleMedium">Average Attempts to Send:</Text>
             <View className="grow"/>
-            <Text className="my-2" variant="titleMedium">{averageAttemptsToSend.toFixed(3)}</Text>
+            <Text className="" variant="titleMedium">{averageAttemptsToSend.toFixed(1)}</Text>
           </View>
-          {/* The pr-10 is needed to center the bar chart for some reason */}
-          <View className=" pr-10">
-            <BarChart
-              className="self-center"
-              barWidth={(windowWidth - (((completionRateByGradeData.length + 4)) * 6)) / (completionRateByGradeData.length + 4)}
-              data={completionRateByGradeData}
-              frontColor="teal"
-              spacing={6}
-              maxValue={100}
-              noOfSections={5}
-            />
+          <Divider bold className="w-full"/>
+          <View className="py-4 items-start w-full"
+            onLayout={(event) => {
+              ({x, y, width, height} = event.nativeEvent.layout);
+              setBarChartWidth(width);
+            }}>
+            <Text className="self-start" variant="titleMedium">Completion Rate By Grade:</Text>
+            {/* The pr-10 is needed to center the bar chart for some reason */}
+            {/* <View className=" mr-10 items-center"> */}
+              <BarChart
+                className="ml-0"
+                // barWidth={(windowWidth - (((completionRateByGradeData.length + 4)) * 6)) / (completionRateByGradeData.length + 4)}
+                barWidth={((barChartWidth - ((completionRateByGradeData.length + 1) * 6 + 35)) / completionRateByGradeData.length)}
+                data={completionRateByGradeData}
+                frontColor="#e8def8"
+                spacing={6}
+                maxValue={100}
+                noOfSections={5}
+                yAxisThickness={0}
+                yAxisLabelSuffix="%"
+                yAxisIndicesWidth={1}
+                yAxisLabelWidth={35}
+                disableScroll
+              />
+            {/* </View> */}
           </View>
           <Button className="grow" mode='contained' 
             onPress={() => onLogoutPress()}>Logout</Button>

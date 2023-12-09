@@ -117,7 +117,7 @@ router.get('/stats/completionRateByGrade', async (req, res) => {
       }
     }
   ]);
-  console.log(JSON.stringify(completionRateByGrade, null, 4))
+  // console.log(JSON.stringify(completionRateByGrade, null, 4))
 
   if (!completionRateByGrade) return res.status(500).json({success: false});
   // console.log("success!");

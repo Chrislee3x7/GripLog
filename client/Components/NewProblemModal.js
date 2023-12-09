@@ -76,6 +76,7 @@ const NewProblemModal = ({ visible, closeModal }) => {
     setGrade(0);
     setName("");
     setLocation("");
+    setNameError("");
     setColorError("");
     setGradeError(0);
   }
