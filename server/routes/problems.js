@@ -39,6 +39,109 @@ var uploadOptions = multer({storage: storage});
 // Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
 
+router.get('/stats/averageAttemptCount', async (req, res) => {
+  // check user_Id first
+  const token = req.get('Authorization').split(' ')[1];
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const userId = await User.findById(decoded.userId).select('_id');
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  // console.log("ABout to aggregate");
+  const averageAttemptCount = await Attempt.aggregate([
+    {
+      $match: {
+        user_id: new mongoose.Types.ObjectId(userId)
+      }
+    },
+    {
+      $lookup: {
+        from: "problems",
+        localField: "problem_id",
+        foreignField: "_id",
+        as: "problem"
+      }
+    },
+    {
+      $unwind: {
+        path: "$problem"
+      }
+    },
+    {
+      $group: {
+        _id: "$problem_id",
+        first_send: { // first send of the problem
+          $min: {
+            // isSend: "$isSend",//{ $not: "$isSend" },
+            isSend: {
+              $cond: {
+                if: { $eq: ["$isSend", false] },
+                then: 1,
+                else: 0
+              }
+            },
+            date: "$date",
+            _id: "$_id",
+            notes: "$notes"
+          }
+        },
+        attempts: {
+          $push: {
+            date: "$date",
+            _id: "$_id",
+            notes: "$notes",
+            isSend: "$isSend"
+          }
+        }
+      }
+    },
+    {
+      $match: {
+        "first_send.isSend": 0
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        first_send: 1,
+        attempts_to_send: {
+          $filter: {
+            input: "$attempts",
+            as: "attempt",
+            cond: {
+              $and: [
+                { $eq: ["$$attempt.isSend", false] },
+                {
+                  $or: [
+                    { $lte: ["$$attempt.date", "$first_send.date"] },
+                    { $lte: ["$$attempt._id", "$first_send._id"] }
+                  ]
+                }
+              ]
+            }
+          },
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        num_attempts_to_send: { $add: [{ $size: "$attempts_to_send" }, 1]}
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        average_attempt_count: { $avg: "$num_attempts_to_send" }
+      }
+    }
+  ]).exec();
+
+  if (!averageAttemptCount) return res.status(500).json({success: false});
+  
+  // console.log("success!");
+  res.status(200).send(averageAttemptCount[0]);
+});
+
 // gets all Problems of this user does aggregate function to find attempts data
 router.get('/', async (req, res) => {
   // check user_Id first
@@ -52,8 +155,8 @@ router.get('/', async (req, res) => {
   // console.log("got userId", userId)
   if (!userId) return res.status(400).send('User is invalid!');
 
-  // const castUserId = (userId) => mongoose.Types.ObjectId(userId);
-  const problemOverviewList = await Problem.aggregate([{ 
+  const problemOverviewList = await Problem.aggregate([
+    { 
       $match: { 
         user_id: new mongoose.Types.ObjectId(userId) 
       }
@@ -160,8 +263,6 @@ router.post('/', uploadOptions.array('images', 5), async (req, res) => {
     location: req.body.location,
     dateCompleted: 0
   });
-
-  mongoose.connection.
 
   console.log("defined problem in server");
 

@@ -13,7 +13,8 @@ class UserService {
   async getAttempts(problemId) {
     const auth = await authHeader();
     // console.log(problemId);
-    return axios.get(`${API_URL}/attempts`, { params: 
+    return axios.get(`${API_URL}/attempts`, 
+    { params: 
       {
         problem_id: problemId
       }, headers: auth
@@ -75,24 +76,30 @@ class UserService {
     }, { headers: auth });
   }
 
-  async deleteAttempt(id) {
+  async deleteAttempt(attemptId) {
     const auth = await authHeader();
     return axios.delete(`${API_URL}/attempts`, {
       data: {
-        attempt_id: id
+        attempt_id: attemptId
       },
       headers: auth,
     });
   }
 
-  async deleteProblem(id) {
+  async deleteProblem(problemId) {
     const auth = await authHeader();
     return axios.delete(`${API_URL}/problems`, {
       data: {
-        problem_id: id
+        problem_id: problemId
       },
       headers: auth,
     });
+  }
+
+  async getProblemStats(userId) {
+    const auth = await authHeader();
+    return axios.get(`${API_URL}/problems/stats/averageAttemptCount`, 
+    { headers: auth });
   }
 }
 

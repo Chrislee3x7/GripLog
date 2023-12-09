@@ -57,6 +57,7 @@ router.post('/', async (req, res) => {
 
   // add a new attempt with problem_id
   const attempt = new Attempt({
+    user_id: userId,
     problem_id: problemId,
     date: req.body.date,
     notes: req.body.notes,
