@@ -88,17 +88,17 @@ const ProfileScreen = ({ navigation }) => {
           <View className="flex-row py-4 px-4 rounded-lg bg-slate-200">
             <Text variant="titleMedium">Problems Attempted:</Text>
             <View className="grow"/>
-            <Text variant="titleMedium">{problemCount}</Text>
+            <Text variant="titleMedium">{problemCount != undefined ? problemCount : 0}</Text>
           </View>
           <View className="flex-row py-4 px-4 rounded-lg bg-slate-200">
             <Text variant="titleMedium">Problems Sent:</Text>
             <View className="grow"/>
-            <Text variant="titleMedium">{sentProblemCount}</Text>
+            <Text variant="titleMedium">{sentProblemCount != undefined ? sentProblemCount : 0}</Text>
           </View>
           <View className="flex-row py-4 px-4 rounded-lg bg-slate-200">
             <Text variant="titleMedium">Problems Flashed:</Text>
             <View className="grow"/>
-            <Text variant="titleMedium">{flashedProblemCount}</Text>
+            <Text variant="titleMedium">{flashedProblemCount != undefined ? flashedProblemCount : 0}</Text>
           </View>
           {/* <View className="flex-row py-4 px-4 rounded-lg bg-slate-200">
             <Text variant="titleMedium">Highest Grade Climbed:</Text>
@@ -108,7 +108,7 @@ const ProfileScreen = ({ navigation }) => {
           <View className="flex-row py-4 px-4 rounded-lg bg-slate-200">
             <Text variant="titleMedium">Average Attempts to Send:</Text>
             <View className="grow"/>
-            <Text variant="titleMedium">{averageAttemptsToSend.toFixed(1)}</Text>
+            <Text variant="titleMedium">{averageAttemptsToSend != undefined ? averageAttemptsToSend.toFixed(1) : 0}</Text>
           </View>
           <View className="py-4 px-4 rounded-lg bg-slate-200 items-start w-full"
             onLayout={(event) => {

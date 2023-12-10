@@ -89,19 +89,19 @@ const ProblemListView = ({ navigation }) => {
         <IconButton className="" icon="filter-variant" size={28} onPress={() => setFiterMenuOpen(!filterMenuOpen)}/>
       </View>
       {filterMenuOpen ? (
-        <View className="mb-2 p-4 rounded-lg bg-slate-300">
+        <View className="mb-2 p-4 rounded-lg bg-slate-200">
           {/* <Text variant="titleLarge">Parameters</Text> */}
           <View className="flex items-start gap-y-2">
-            <View className="flex-row">
-              <Text variant="bodyLarge">Old First</Text>
+            <View className="flex-row items-center">
+              <Text variant="titleSmall">Old First</Text>
               <View className="grow"/>
               <Switch
                 value={sortOldFirst}
                 onValueChange={(val) => {setSortOldFirst(val)}}
               />
             </View>
-            <View className="flex-row">
-              <Text variant="bodyLarge">Show Incomplete Only</Text>
+            <View className="flex-row items-center">
+              <Text variant="titleSmall">Show Incomplete Only</Text>
               <View className="grow"/>
               <Switch
                 value={filterIncomplete}
@@ -110,7 +110,7 @@ const ProblemListView = ({ navigation }) => {
             </View>
             <View className="w-full flex-col gap-y-2">
               <View className="mr-2 flex-row gap-x-2">
-                <View className="rounded-md bg-slate-400 px-2 py-1 w-1/6 justify-center">
+                <View className="rounded-md bg-slate-300 px-2 py-1 w-1/6 justify-center">
                   <Text className="text-center" variant="titleSmall">V{filterMinGrade}</Text>
                 </View>
                 <View className="grow">
@@ -126,7 +126,7 @@ const ProblemListView = ({ navigation }) => {
                 </View>
               </View>
               <View className="mr-2 flex-row gap-x-2">
-                <View className="rounded-md bg-slate-400 px-2 py-1 w-1/6 justify-center">
+                <View className="rounded-md bg-slate-300 px-2 py-1 w-1/6 justify-center">
                   <Text className="text-center" variant="titleSmall">V{filterMaxGrade}</Text>
                 </View>
                 <View className="grow">
@@ -142,7 +142,7 @@ const ProblemListView = ({ navigation }) => {
                   />
                 </View>
               </View>
-              {resetButtonVisible() ? (<Button className="self-end" onPress={() => resetFilter()}>Reset</Button>) : null}
+              <Button className="self-end" disabled={!resetButtonVisible()} onPress={() => resetFilter()}>Reset</Button>
             </View>
           </View>
         </View> ) : null
