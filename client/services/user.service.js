@@ -107,6 +107,12 @@ class UserService {
     return axios.get(`${API_URL}/problems/stats/completionRateByGrade`, 
     { headers: auth });
   }
+
+  async getStatsProblemsFlashed(userId) {
+    const auth = await authHeader();
+    return axios.get(`${API_URL}/problems/stats/problemsFlashed`, 
+    { headers: auth });
+  }
 }
 
 export default new UserService();

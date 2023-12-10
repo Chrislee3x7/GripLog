@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Card, Text, Button, FAB, useTheme } from 'react-native-paper';
+import { Card, Text, Button, FAB, useTheme, IconButton, SegmentedButtons, Switch } from 'react-native-paper';
 import { ScrollView, View, Image } from 'react-native'
 import UserService from '../services/user.service';
 import ProblemCard from './ProblemCard';
 import NewProblemModal from './NewProblemModal';
+import Slider from '@react-native-community/slider'
 
 
 const ProblemListView = ({ navigation }) => {
@@ -12,7 +13,18 @@ const ProblemListView = ({ navigation }) => {
   const theme = useTheme();
 
   const [problems, setProblems] = useState([]);
-  const [newProblemModalIsVisible, setNewProblemModalIsVisible] = React.useState(false);
+  const [newProblemModalIsVisible, setNewProblemModalIsVisible] = useState(false);
+
+  // filter/sort stuff
+  const [filterMenuOpen, setFiterMenuOpen] = useState(false);
+  const [sliderLength, setSliderLength] = useState(0);
+
+  const [sortOldFirst, setSortOldFirst] = useState(false);
+  const [filterIncomplete, setFilterIncomplete] = useState(false);
+  const [filterMinGrade, setFilterMinGrade] = useState(0);
+  const [filterMaxGrade, setFilterMaxGrade] = useState(17);
+  const [displayProblems, setDisplayProblems] = useState([]);
+  const [startFilter, setStartFilter] = useState(0);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -22,10 +34,17 @@ const ProblemListView = ({ navigation }) => {
     }, [newProblemModalIsVisible])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      applyFilter();
+      return; 
+    }, [sortOldFirst, filterIncomplete, startFilter])
+  );
+
   const fetchProblems = async () => {
     const problems = await UserService.getProblems();
-    // console.log(problems.data);
     setProblems(problems.data);
+    setDisplayProblems(problems.data);
   }
 
   const deleteProblem = async (id) => {
@@ -37,12 +56,100 @@ const ProblemListView = ({ navigation }) => {
     navigation.navigate("ProblemDetail", { id: id, color: color, grade: grade, name: name });
   }
 
+  const applyFilter = () => {
+    // go through all filter steps starting from the original problems array
+    let newProblems = [...problems];
+    if (filterIncomplete) {
+      newProblems = newProblems.filter((p) => { return p.sendCount === 0 })
+    }
+    if (sortOldFirst) {
+      newProblems.reverse();
+    }
+    newProblems = newProblems.filter(p => { return p.grade >= filterMinGrade && p.grade <= filterMaxGrade})
+    // console.log(newProblems);
+    setDisplayProblems(newProblems);
+  }
+
+  const resetButtonVisible = () => {
+    return sortOldFirst || filterIncomplete || filterMinGrade !== 0 || filterMaxGrade !== 17;
+  }
+
+  const resetFilter = () => {
+    setSortOldFirst(false);
+    setFilterIncomplete(false);
+    setFilterMinGrade(0);
+    setFilterMaxGrade(17);
+    setDisplayProblems(problems);
+  }
+
   return (
     <View className="absolute top-0 left-0 right-0 bottom-0 mt-12 mx-4" style={{backgroundColor: theme.colors.surface}}>
-      <Text className="mt-6 mb-4 mx-4" variant="headlineLarge">Problems</Text>
+      <View className="pt-2 pl-4 flex-row justify-between items-center">
+        <Text className="" variant="headlineLarge">Problems</Text>
+        <IconButton className="" icon="filter-variant" size={28} onPress={() => setFiterMenuOpen(!filterMenuOpen)}/>
+      </View>
+      {filterMenuOpen ? (
+        <View className="mb-2 p-4 rounded-lg bg-slate-300">
+          {/* <Text variant="titleLarge">Parameters</Text> */}
+          <View className="flex items-start gap-y-2">
+            <View className="flex-row">
+              <Text variant="bodyLarge">Old First</Text>
+              <View className="grow"/>
+              <Switch
+                value={sortOldFirst}
+                onValueChange={(val) => {setSortOldFirst(val)}}
+              />
+            </View>
+            <View className="flex-row">
+              <Text variant="bodyLarge">Show Incomplete Only</Text>
+              <View className="grow"/>
+              <Switch
+                value={filterIncomplete}
+                onValueChange={(val) => {setFilterIncomplete(val)}}
+              />
+            </View>
+            <View className="w-full flex-col gap-y-2">
+              <View className="mr-2 flex-row gap-x-2">
+                <View className="rounded-md bg-slate-400 px-2 py-1 w-1/6 justify-center">
+                  <Text className="text-center" variant="titleSmall">V{filterMinGrade}</Text>
+                </View>
+                <View className="grow">
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={17}
+                    upperLimit={filterMaxGrade}
+                    step={1}
+                    tapToSeek={true}
+                    onValueChange={(pos) => {setFilterMinGrade(pos)}}
+                    onSlidingComplete={(val) => {setStartFilter(startFilter + 1)}}
+                  />
+                </View>
+              </View>
+              <View className="mr-2 flex-row gap-x-2">
+                <View className="rounded-md bg-slate-400 px-2 py-1 w-1/6 justify-center">
+                  <Text className="text-center" variant="titleSmall">V{filterMaxGrade}</Text>
+                </View>
+                <View className="grow">
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={17}
+                    lowerLimit={filterMinGrade}
+                    value={filterMaxGrade}
+                    step={1}
+                    tapToSeek={true}
+                    onValueChange={(pos) => {setFilterMaxGrade(pos)}}
+                    onSlidingComplete={(val) => {setStartFilter(startFilter + 1)}}
+                  />
+                </View>
+              </View>
+              {resetButtonVisible() ? (<Button className="self-end" onPress={() => resetFilter()}>Reset</Button>) : null}
+            </View>
+          </View>
+        </View> ) : null
+      }
       <ScrollView showsVerticalScrollIndicator="false">
         <View className="flex-col overflow-auto mt-2">
-          {problems.length > 0 ? problems.map(problem => (
+          {displayProblems.length > 0 ? displayProblems.map(problem => (
             <ProblemCard
               id={problem._id}
               color={problem.color}

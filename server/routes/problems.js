@@ -39,6 +39,68 @@ var uploadOptions = multer({storage: storage});
 // Visiting http://localhost:3000 will yield "hello API!"
 // http://localhost:3000/api/v1/problems
 
+router.get('/stats/problemsFlashed', async (req, res) => {
+  // check user_Id first
+  const token = req.get('Authorization').split(' ')[1];
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  const userId = await User.findById(decoded.userId).select('_id');
+  if (!userId) return res.status(400).send('User is invalid!');
+
+  const problemsFlashed = await Attempt.aggregate([
+    {
+      $match: {
+        user_id: new mongoose.Types.ObjectId(userId)
+      }
+    },
+    {
+      $lookup: {
+        from: "problems",
+        localField: "problem_id",
+        foreignField: "_id",
+        as: "problem"
+      }
+    },
+    {
+      $unwind: {
+        path: "$problem"
+      }
+    },
+    {
+      $group: {
+        _id: {
+          problem_id: "$problem_id",
+          grade: "$problem.grade"
+        },
+        firstAttempt: { // first attempt of the problem
+          $min: {
+            date: "$date",
+            _id: "$_id",
+            isSend: "$isSend"
+          },
+        },
+      }
+    },
+    {
+      $group: {
+        _id: "$_id.grade",
+        numFlashed: { $sum: { $cond: { if: "$firstAttempt.isSend", then: 1, else: 0 } } },
+        numNotFlashed: { $sum: { $cond: { if: "$firstAttempt.isSend", then: 0, else: 1 } }  }
+      }
+    },
+    {
+      $sort: {
+        _id: 1
+      }
+    }
+  ])
+
+  console.log(JSON.stringify(problemsFlashed, null, 4))
+
+  if (!problemsFlashed) return res.status(500).json({success: false});
+  // console.log("success!");
+  res.status(200).send(problemsFlashed);
+});
+
 router.get('/stats/completionRateByGrade', async (req, res) => {
   // check user_Id first
   const token = req.get('Authorization').split(' ')[1];
@@ -71,15 +133,6 @@ router.get('/stats/completionRateByGrade', async (req, res) => {
           grade: "$problem.grade",
           problem_id: "$problem_id"
         },
-        // isComplete: {
-        //   $max: {
-        //     $cond: {
-        //       if: { $eq: ["$isSend", true] },
-        //       then: 1,
-        //       else: 0
-        //     }
-        //   }
-        // }
         isComplete: {
           $max: {
             isSend: {
@@ -89,9 +142,6 @@ router.get('/stats/completionRateByGrade', async (req, res) => {
                 else: 0
               }
             },
-            // date: "$date",
-            // _id: "$_id",
-            // notes: "$notes"
           }
         },
       }
@@ -154,7 +204,7 @@ router.get('/stats/averageAttemptCount', async (req, res) => {
     {
       $group: {
         _id: "$problem_id",
-        first_send: { // first send of the problem
+        firstSend: { // first send of the problem
           $min: {
             // isSend: "$isSend",//{ $not: "$isSend" },
             isSend: {
@@ -181,14 +231,14 @@ router.get('/stats/averageAttemptCount', async (req, res) => {
     },
     {
       $match: {
-        "first_send.isSend": 0
+        "firstSend.isSend": 0
       }
     },
     {
       $project: {
         _id: 1,
-        first_send: 1,
-        attempts_to_send: {
+        firstSend: 1,
+        attemptsToSend: {
           $filter: {
             input: "$attempts",
             as: "attempt",
@@ -197,8 +247,8 @@ router.get('/stats/averageAttemptCount', async (req, res) => {
                 { $eq: ["$$attempt.isSend", false] },
                 {
                   $or: [
-                    { $lte: ["$$attempt.date", "$first_send.date"] },
-                    { $lte: ["$$attempt._id", "$first_send._id"] }
+                    { $lte: ["$$attempt.date", "$firstSend.date"] },
+                    { $lte: ["$$attempt._id", "$firstSend._id"] }
                   ]
                 }
               ]
@@ -210,13 +260,13 @@ router.get('/stats/averageAttemptCount', async (req, res) => {
     {
       $project: {
         _id: 1,
-        num_attempts_to_send: { $add: [{ $size: "$attempts_to_send" }, 1]}
+        numAttemptsToSend: { $add: [{ $size: "$attemptsToSend" }, 1]}
       }
     },
     {
       $group: {
         _id: null,
-        average_attempt_count: { $avg: "$num_attempts_to_send" }
+        average_attempt_count: { $avg: "$numAttemptsToSend" }
       }
     }
   ]).exec();
@@ -268,7 +318,6 @@ router.get('/', async (req, res) => {
         location: { $max: "$location" },
         attemptCount: { $sum: { $cond: { if: { $gt: ["$attempts", undefined] }, then: 1, else: 0 } } },
         sendCount: { $sum: { $cond: { if: "$attempts.isSend", then: 1, else: 0 } } },
-        dateStarted: { $max: "$dateStarted" },
         lastAttemptDate: { $max: "$attempts.date" }
       }
     },
@@ -281,14 +330,13 @@ router.get('/', async (req, res) => {
         location: 1,
         attemptCount: 1,
         sendCount: 1,
-        dateStarted: 1,
         lastAttemptDate: { $ifNull: [ "$lastAttemptDate", new Date("9000-01-01") ] }
       }
     },
     {
       $sort: {
         lastAttemptDate: -1,
-        dateStarted: -1
+        _id: -1
       }
     }
   ]).exec();
