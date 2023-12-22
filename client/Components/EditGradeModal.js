@@ -14,7 +14,7 @@ const EditGradeModal = ({ visible, closeModal, grade, setGrade }) => {
   return (
     <View>
       <Portal>
-        <Modal visible={visible} onDismiss={() => closeModal()} className="h-1/2 w-screen">
+        <Modal visible={visible} onDismiss={() => closeModal()} className="border-4 border-green-400 h-1/2 w-screen">
           <View className="p-4 m-4 rounded-lg grow bg-white">
             <View className="flex-row justify-between">
               <Text variant="titleMedium" className="mx-4 mt-2">Grade</Text>

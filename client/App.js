@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { React } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import GripLog from './Components/GripLog';
@@ -18,13 +19,16 @@ const theme = {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <PaperProvider theme={theme}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <GripLog/>  
-        </GestureHandlerRootView>
-      </PaperProvider>
-    </NavigationContainer>
+    <SafeAreaProvider>  
+      <NavigationContainer>
+        <PaperProvider theme={theme}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            
+            <GripLog/>  
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
   )
 }
 

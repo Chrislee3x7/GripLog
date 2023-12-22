@@ -59,8 +59,8 @@ const AttemptCard = ({ attemptId, attemptDate, attemptNotes, attemptIsSend, edit
   const renderRightActions = (progress, dragX) => {
 
     return (
-      <TouchableOpacity className="rounded-lg ml-2" activeOpacity={0.7}>
-        <Button className="rounded-lg items-center" variant="contained" 
+      <TouchableOpacity className="rounded-xl ml-2" activeOpacity={0.7}>
+        <Button className="rounded-xl items-center" variant="contained" 
           buttonColor="#ef4444" 
           onPress={() => deleteAttempt(attemptId)}>
           <View className="justify-center items-center grow">
@@ -74,7 +74,7 @@ const AttemptCard = ({ attemptId, attemptDate, attemptNotes, attemptIsSend, edit
   return (
     <View className="mb-2">
       <Swipeable ref={swipeableRef} renderRightActions={renderRightActions}>
-        <View className="rounded-lg bg-slate-200 px-2">
+        <View className="rounded-xl bg-slate-200 px-2">
           <TouchableOpacity onPress={() => {}} onLongPress={() => {deleteAttempt(attemptId)}} activeOpacity={0.5}>
             <View className="items-center flex-row grow pt-2 pb-2 justify-between">
               <TouchableOpacity onPress={() => setExpanded(!expanded)} activeOpacity={0.5}>

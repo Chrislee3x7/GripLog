@@ -34,8 +34,8 @@ const ProblemCard = ({ id, color, grade, name, location, imageUri, sendCount, at
   const renderRightActions = (progress, dragX) => {
 
     return (
-      <TouchableOpacity className="rounded-lg ml-2" activeOpacity={0.7}>
-        <Button className="rounded-lg items-center" variant="contained" 
+      <TouchableOpacity className="rounded-xl ml-2" activeOpacity={0.7}>
+        <Button className="rounded-xl items-center" variant="contained" 
           buttonColor="#ef4444" 
           onPress={() => onDeletePressed()}>
           <View className="justify-center items-center grow">
