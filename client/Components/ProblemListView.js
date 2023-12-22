@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Card, Text, Button, FAB, useTheme, IconButton, SegmentedButtons, Switch } from 'react-native-paper';
-import { ScrollView, View, Image } from 'react-native'
+import { Card, Text, Button, FAB, useTheme, IconButton, SegmentedButtons, Switch, Portal } from 'react-native-paper';
+import { ScrollView, View, Image, Modal} from 'react-native'
 import UserService from '../services/user.service';
 import ProblemCard from './ProblemCard';
 import NewProblemModal from './NewProblemModal';
@@ -84,13 +84,15 @@ const ProblemListView = ({ navigation }) => {
   }
 
   // bottom sheet stuff
-
-  // const bottomSheetRef = React.createRef();
-
-  const openNewProblemModal = () => {
-    console.log("Opening new problem modal", bottomSheetRef);
+  const openTestBottomSheet = () => {
+    console.log("Opening testBottomSheet");
     // bottomSheetRef.current.snapToIndex(1);
   }
+
+  // ref
+  const ref = useRef();
+  // variables
+  const snapPoints = useMemo(() => ['50%', '80%'], []);
 
   return (
     <View className="flex grow">
@@ -183,8 +185,9 @@ const ProblemListView = ({ navigation }) => {
           </View>
         </ScrollView>
         <FAB className="absolute bottom-4 right-0 mx-4" variant="tertiary" size="medium" icon="plus" onPress={() => setNewProblemModalIsVisible(true)}/>
+        {/* <FAB className="absolute bottom-24 right-0 mx-4" variant="primary" size="medium" icon="plus" onPress={() => openTestBottomSheet(true)}/> */}
       </View>
-      { newProblemModalIsVisible ? (<NewProblemModal visible={newProblemModalIsVisible} closeModal={() => {setNewProblemModalIsVisible(false)}}/>) : null }
+      { newProblemModalIsVisible ? (<Modal transparent className="w-full h-full"><NewProblemModal visible={newProblemModalIsVisible} closeModal={() => {setNewProblemModalIsVisible(false)}}/></Modal>) : null }
     </View>
   )
 }

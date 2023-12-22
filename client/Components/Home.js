@@ -4,14 +4,27 @@ import ProblemScreen from './ProblemScreen';
 import SocialScreen from './SocialScreen';
 import ProfileScreen from './ProfileScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Home = ({ navigation }) => {
 
   const Tab = createMaterialBottomTabNavigator();
 
+  const safeAreaInsets = useSafeAreaInsets();
+
   return (
-    <Tab.Navigator initialRouteName="Problems" shifting="true"
-      backBehavior="initialRoute">
+    <Tab.Navigator 
+      initialRouteName="Problems" 
+      shifting="true"
+      backBehavior="initialRoute"
+      tabBarStyle={{
+        style: {
+          height: safeAreaInsets.bottom,
+        },
+        tabStyle: {
+          height: 0
+        }
+      }}>
       <Tab.Screen name="Problems" component={ProblemScreen} 
         options={{
           tabBarLabel: 'Problems',
